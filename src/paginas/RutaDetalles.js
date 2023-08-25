@@ -10,6 +10,11 @@ import {
   RESET_RUTA_DETALLES,
 } from "../constantes/rutaConstantes";
 
+// Estilos de la pagina
+import { 
+  StyledContainer
+ } from './styles/RutaDetalles.styles'
+
 const RutaDetalles = ({ match }) => {
   // Obtener el id de la ruta
   const params = useParams(match);
@@ -76,13 +81,9 @@ const RutaDetalles = ({ match }) => {
     navigate("/rutas");
   };
 
-  return loading ? (
-    <Loader />
-  ) : error ? (
-    <Mensaje variant="danger">{error}</Mensaje>
-  ) : (
+  return (
     ruta && (
-      <div style={{ padding: "25px", width: "50%" }}>
+      <StyledContainer fluid>
         {loadingActualizar && <Loader />}
         {errorActualizar && (
           <Mensaje variant="danger">{errorActualizar}</Mensaje>
@@ -121,7 +122,7 @@ const RutaDetalles = ({ match }) => {
           </Form.Group>
           <Button type="submit">Actualizar ruta</Button>
         </Form>
-      </div>
+      </StyledContainer>
     )
   );
 };

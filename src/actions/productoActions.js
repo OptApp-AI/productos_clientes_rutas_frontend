@@ -42,7 +42,7 @@ export const pedirProductosLista = () => async (dispatch, getState) => {
 
     console.log("DISPARANDO 3");
     const { data } = await axios.get(
-      "http://127.0.0.1:8000/api/productos/",
+      "/api/productos/",
       config
     );
     console.log("DISPARANDO 4");
@@ -72,7 +72,7 @@ export const obtenerProductoDetalles = (id) => async (dispatch, getState) => {
       },
     };
     const { data } = await axios.get(
-      `http://127.0.0.1:8000/api/productos/${id}/`,
+      `/api/productos/${id}/`,
       config
     );
 
@@ -99,7 +99,7 @@ export const actualizarProducto = (producto) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `http://127.0.0.1:8000/api/modificar-producto/${producto.id}/`,
+      `/api/modificar-producto/${producto.id}/`,
       producto,
       config
     );
@@ -132,7 +132,7 @@ export const registrarProducto = (producto) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.post(
-      "http://127.0.0.1:8000/api/crear-producto/",
+      "/api/crear-producto/",
       producto,
       config
     );
@@ -165,7 +165,7 @@ export const borrarProducto = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.delete(
-      `http://127.0.0.1:8000/api/modificar-producto/${id}/`,
+      `/api/modificar-producto/${id}/`,
       config
     );
 

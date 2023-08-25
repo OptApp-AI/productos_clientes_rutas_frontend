@@ -39,7 +39,7 @@ export const pedirSalidaRutasLista = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      "http://127.0.0.1:8000/api/salida-rutas/",
+      "/api/salida-rutas/",
       config
     );
 
@@ -67,7 +67,7 @@ export const obtenerSalidaRutaDetalles = (id) => async (dispatch, getState) => {
       },
     };
     const { data } = await axios.get(
-      `http://127.0.0.1:8000/api/salida-rutas/${id}/`,
+      `/api/salida-rutas/${id}/`,
       config
     );
 
@@ -95,7 +95,7 @@ export const actualizarSalidaRuta =
       };
 
       const { data } = await axios.put(
-        `http://127.0.0.1:8000/api/modificar-salida-ruta/${salidaRuta.id}/`,
+        `/api/modificar-salida-ruta/${salidaRuta.id}/`,
         salidaRuta,
         config
       );
@@ -128,7 +128,7 @@ export const registrarSalidaRuta =
       };
 
       const { data } = await axios.post(
-        "http://127.0.0.1:8000/api/crear-salida-ruta/",
+        "/api/crear-salida-ruta/",
         salidaRuta,
         config
       );
@@ -159,7 +159,7 @@ export const registrarSalidaRutaVenta =
       };
 
       const { data } = await axios.put(
-        `http://127.0.0.1:8000/api/venta-salida-ruta/${salidaRutaVenta.id}/`,
+        `/api/venta-salida-ruta/${salidaRutaVenta.id}/`,
         salidaRutaVenta,
         config
       );

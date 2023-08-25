@@ -7,6 +7,14 @@ import Loader from "../componentes/Loader";
 import Mensaje from "../componentes/Mensaje";
 import { RESET_RUTA_REGISTRAR } from "../constantes/rutaConstantes";
 
+import { 
+  StyledContainer,
+  StyledRow,
+  StyledCol,
+  StyledFormGroup,
+  StyledBoton
+ } from './styles/RegistrarRuta.styles'
+
 const RegistrarRuta = () => {
   // Funcion para disparar acciones
   const dispatch = useDispatch();
@@ -50,50 +58,57 @@ const RegistrarRuta = () => {
 
   // Aqui no es necesario empezar con loading porque no hay un estado necesario al cargar el componente.
   return (
-    <div style={{ padding: "25px", width: "50%" }}>
-      {loadingRegistrar && <Loader />}
-      {errorRegistrar && <Mensaje variant="danger">{errorRegistrar}</Mensaje>}
-      {/* Esta es la parte que cambia en las paginas */}
+    <StyledContainer fluid>
       <h1>Registrar ruta</h1>
       <Form onSubmit={manejarRegistrarRuta}>
-        <Form.Group controlId="dia">
-          <Form.Label>NOMBRE</Form.Label>
-          <Form.Control
-            type="text"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
 
-        <Form.Group controlId="nombre">
-          <Form.Label>DIA</Form.Label>
-          <Form.Control
-            as="select"
-            value={dia}
-            onChange={(e) => setDia(e.target.value)}
-          >
-            <option value="LUNES">LUNES</option>
-            <option value="MARTES">MARTES</option>
-            <option value="MIERCOLES">MIERCOLES</option>
-            <option value="JUEVES">JUEVES</option>
-            <option value="VIERNES">VIERNES</option>
-            <option value="SABADO">SABADO</option>
-            <option value="DOMINGO">DOMINGO</option>
-          </Form.Control>
-        </Form.Group>
+        <StyledRow>
+          <StyledCol md={6}>
+            <StyledFormGroup controlId="dia">
+              <Form.Label>NOMBRE</Form.Label>
+              <Form.Control
+                type="text"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+              ></Form.Control>
+            </StyledFormGroup>
 
-        <Form.Group controlId="repartidor">
-          <Form.Label>Repartidor</Form.Label>
-          <Form.Control
-            type="text"
-            value={repartidor}
-            onChange={(e) => setRepartidor(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <StyledFormGroup controlId="nombre">
+              <Form.Label>DIA</Form.Label>
+              <Form.Control
+                as="select"
+                value={dia}
+                onChange={(e) => setDia(e.target.value)}
+              >
+                <option value="LUNES">LUNES</option>
+                <option value="MARTES">MARTES</option>
+                <option value="MIERCOLES">MIERCOLES</option>
+                <option value="JUEVES">JUEVES</option>
+                <option value="VIERNES">VIERNES</option>
+                <option value="SABADO">SABADO</option>
+                <option value="DOMINGO">DOMINGO</option>
+              </Form.Control>
+            </StyledFormGroup>
 
-        <Button type="submit">Registrar ruta</Button>
+            <StyledFormGroup controlId="repartidor">
+              <Form.Label>Repartidor</Form.Label>
+              <Form.Control
+                type="text"
+                value={repartidor}
+                onChange={(e) => setRepartidor(e.target.value)}
+              ></Form.Control>
+            </StyledFormGroup>
+          </StyledCol>
+        </StyledRow>
+
+          <StyledRow>
+            <StyledCol>
+              <StyledBoton type="submit">Registrar ruta</StyledBoton>
+            </StyledCol>
+          </StyledRow>
+
       </Form>
-    </div>
+    </StyledContainer>
   );
 };
 

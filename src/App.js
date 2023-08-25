@@ -15,9 +15,12 @@ import SalidaRutaDetalles from "./paginas/SalidaRutaDetalles";
 import SalidaRutasLista from "./paginas/SalidaRutasLista";
 import VentaSalidaRuta from "./paginas/VentaSalidaRuta";
 
+import GlobalStyles from './GlobalStyles'
+
 function App() {
   return (
     <div className="App">
+      <GlobalStyles />
       <BrowserRouter>
         <Encabezado />
         <Routes>

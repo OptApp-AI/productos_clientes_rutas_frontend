@@ -13,6 +13,15 @@ import Mensaje from "../componentes/Mensaje";
 
 import { RESET_RUTA_DETALLES } from "../constantes/rutaConstantes";
 
+import TablaRutas from '../componentes/RutasLista/TablaRutas'
+
+// Estilos de la pagina
+import {
+  StyledContainer,
+  StyledRow,
+  StyledCol
+} from './styles/RutasLista.styles'
+
 const RutasLista = () => {
   // Funcion para disparar las acciones
   const dispatch = useDispatch();
@@ -58,55 +67,65 @@ const RutasLista = () => {
     }
   };
 
-  return loading ? (
-    <Loader />
-  ) : error ? (
-    <Mensaje variant="danger">{error}</Mensaje>
-  ) : (
+  return (
     rutas && (
-      <div style={{ padding: "25px" }}>
-        {/* {loadingBorrar && <Loader />} */}
-        {/* {errorBorrar && <Mensaje variant="danger">{errorBorrar}</Mensaje>} */}
-        {/* Esta el la parte que cambia en las paginas */}
+      <>
+      <StyledContainer fluid>
         <h1>Rutas</h1>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>NOMBRE</th>
-              <th>DIA</th>
-              <th>REPARTIDOR</th>
-              <th>EDITAR</th>
-              <th>BORRAR</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rutas.map((r) => (
-              <tr key={r.id}>
-                <td>{r.id}</td>
-                <td>{r.NOMBRE}</td>
-                <td>{r.DIA}</td>
-                <td>{r.REPARTIDOR}</td>
-                <td>
-                  <Button onClick={() => manejarRutaDetalles(r.id)}>
-                    <i className="fa-solid fa-circle-info"></i>
-                  </Button>
-                </td>
-                <td>
-                  <Button
-                    variant="danger"
-                    onClick={() => manejarBorrarRuta(r.id)}
-                  >
-                    <i className="fa-solid fa-trash"></i>
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
+        <StyledRow>
+          <StyledCol>
+
+            {/*Tabla de de rutas*/}
+            <TablaRutas 
+              rutas = {rutas}
+              manejarRutaDetalles = {manejarRutaDetalles}
+              manejarBorrarRuta = {manejarBorrarRuta}
+            />
+            
+          </StyledCol>
+        </StyledRow>
+      </StyledContainer>
+      </>
     )
   );
 };
 
 export default RutasLista;
+
+/*
+<Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>NOMBRE</th>
+                  <th>DIA</th>
+                  <th>REPARTIDOR</th>
+                  <th>EDITAR</th>
+                  <th>BORRAR</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rutas.map((r) => (
+                  <tr key={r.id}>
+                    <td>{r.id}</td>
+                    <td>{r.NOMBRE}</td>
+                    <td>{r.DIA}</td>
+                    <td>{r.REPARTIDOR}</td>
+                    <td>
+                      <Button onClick={() => manejarRutaDetalles(r.id)}>
+                        <i className="fa-solid fa-circle-info"></i>
+                      </Button>
+                    </td>
+                    <td>
+                      <Button
+                        variant="danger"
+                        onClick={() => manejarBorrarRuta(r.id)}
+                      >
+                        <i className="fa-solid fa-trash"></i>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+*/
