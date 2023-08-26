@@ -3,8 +3,8 @@ import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { registrarRuta } from "../actions/rutaActions";
-import Loader from "../componentes/Loader";
-import Mensaje from "../componentes/Mensaje";
+import Loader from "../componentes/general/Loader";
+import Mensaje from "../componentes/general/Mensaje";
 import { RESET_RUTA_REGISTRAR } from "../constantes/rutaConstantes";
 
 import { 

@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import { borrarRuta, pedirRutasLista } from "../actions/rutaActions";
 import { pedirRutasLista } from "../actions/rutaActions";
-import Loader from "../componentes/Loader";
-import Mensaje from "../componentes/Mensaje";
+import Loader from "../componentes/general/Loader";
+import Mensaje from "../componentes/general/Mensaje";
 // import {
 //   RESET_RUTA_BORRAR,
 //   RESET_RUTA_DETALLES,
@@ -13,8 +13,12 @@ import Mensaje from "../componentes/Mensaje";
 
 import { RESET_RUTA_DETALLES } from "../constantes/rutaConstantes";
 
+// Importar tabla de rutas
 import TablaRutas from '../componentes/RutasLista/TablaRutas'
-
+// Importar ventana emergente de rutas
+import VentanaMostrarRuta from '../componentes/RutasLista/VentanaMostrarRuta'
+// Custom Hook para la ventana emergente de los detalles de la ruta
+import { useMostrarDetallesRuta } from './utilis/RutasLista.utilis';
 // Estilos de la pagina
 import {
   StyledContainer,
@@ -57,15 +61,51 @@ const RutasLista = () => {
     navigate(`/rutas/${id}`);
   };
 
+  // Custom hook para los detalles de la ruta
+  const {
+    mostrarRuta,
+    ruta,
+    manejarCerrarVentana,
+    manejarMostrarDetallesRuta
+   } = useMostrarDetallesRuta(dispatch, rutas);
+
   // YO DIGO QUE NO DEBERIA SER POSIBLE BORRAR RUTAS
   const manejarBorrarRuta = (id) => {
     if (window.confirm("¿Está seguro de eliminar este producto")) {
-      //   dispatch(borrarProducto(id));
+      //dispatch(borrarProducto(id));
       alert(`Ruta id: ${id}`);
     } else {
       alert("Operación cancelada");
     }
   };
+
+  // Renderizar loading si se estan cargando las rutas
+  if(loading)
+    return (
+      <StyledContainer fluid>
+        <StyledRow>
+          <StyledCol>
+            <Loader />
+          </StyledCol>
+        </StyledRow>
+      </StyledContainer>
+    );
+
+  
+  // Renderizar mensaj de error si el servidor regresa un error al pedir la lista de rutas
+  if(error) 
+      return(
+         <StyledContainer fluid>
+          <StyledRow>
+            <StyledCol>
+              <Mensaje variant="danger">
+                Hubo un error al cargar la lista de rutas
+              </Mensaje>
+            </StyledCol>
+          </StyledRow>
+         </StyledContainer>
+      );
+
 
   return (
     rutas && (
@@ -74,58 +114,28 @@ const RutasLista = () => {
         <h1>Rutas</h1>
         <StyledRow>
           <StyledCol>
-
             {/*Tabla de de rutas*/}
             <TablaRutas 
               rutas = {rutas}
-              manejarRutaDetalles = {manejarRutaDetalles}
-              manejarBorrarRuta = {manejarBorrarRuta}
+              manejarMostrarDetallesRuta={manejarMostrarDetallesRuta}
+              manejarRutaDetalles={manejarRutaDetalles}
+              manejarBorrarRuta={manejarBorrarRuta}
             />
-            
           </StyledCol>
         </StyledRow>
       </StyledContainer>
+
+      {/* Mostrar ventana con detalles de la ruta */}
+      {mostrarRuta && (
+        <VentanaMostrarRuta 
+          ruta={ruta}
+          mostrarRuta={mostrarRuta}
+          manejarCerrarVentana={manejarCerrarVentana}
+        />
+        )}
       </>
     )
   );
 };
 
 export default RutasLista;
-
-/*
-<Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>NOMBRE</th>
-                  <th>DIA</th>
-                  <th>REPARTIDOR</th>
-                  <th>EDITAR</th>
-                  <th>BORRAR</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rutas.map((r) => (
-                  <tr key={r.id}>
-                    <td>{r.id}</td>
-                    <td>{r.NOMBRE}</td>
-                    <td>{r.DIA}</td>
-                    <td>{r.REPARTIDOR}</td>
-                    <td>
-                      <Button onClick={() => manejarRutaDetalles(r.id)}>
-                        <i className="fa-solid fa-circle-info"></i>
-                      </Button>
-                    </td>
-                    <td>
-                      <Button
-                        variant="danger"
-                        onClick={() => manejarBorrarRuta(r.id)}
-                      >
-                        <i className="fa-solid fa-trash"></i>
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-*/

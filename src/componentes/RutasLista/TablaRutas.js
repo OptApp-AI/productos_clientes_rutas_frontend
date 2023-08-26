@@ -7,6 +7,7 @@ import { Button } from 'react-bootstrap'
 
 const TablaRutas = ({
   rutas,
+  manejarMostrarDetallesRuta,
   manejarRutaDetalles,
   manejarBorrarRuta
 }) => {
@@ -15,7 +16,7 @@ const TablaRutas = ({
   const shouldShow = !isSmallViewport;
 
   // Verificar si es administrador para renderizar algunas propiedades
-  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
+  const isAdmin = false
 
   // Renderizar tabla de rutas
   return (
@@ -42,7 +43,7 @@ const TablaRutas = ({
 
       <tbody>
         {rutas.map((r) => (
-          <tr key={r.id} onClick={() => manejarRutaDetalles(r.id)}>
+          <tr key={r.id} onClick={() => manejarMostrarDetallesRuta(r.id)}>
 
             {shouldShow ? (
               <>
