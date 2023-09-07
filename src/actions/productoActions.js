@@ -45,13 +45,8 @@ export const pedirProductosLista = () => async (dispatch, getState) => {
       "http://127.0.0.1:8000/api/productos/",
       config
     );
-    console.log("DISPARANDO 4");
     dispatch({ type: SUCCESS_PRODUCTO_LISTA, payload: data });
-    console.log("DISPARANDO 3", data);
-    // Guardar los productos en el localStorage
-    localStorage.setItem("productos", JSON.stringify(data));
   } catch (error) {
-    console.log("FALLANDO!!!!!!!!!!");
     dispatch({ type: FAIL_PRODUCTO_LISTA, payload: error.message });
   }
 };

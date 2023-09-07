@@ -45,6 +45,21 @@ const VentanaMostrarSalidaRuta = ({
               </li>
             ))}
           </ol>
+
+          <p>
+            <strong>CLIENTES DE SALIDA RUTA:</strong>
+          </p>
+
+          <ol>
+            {salidaRuta.salida_ruta_clientes.map((cs) => (
+              <li key={cs.id}>
+                {cs.nombre}:
+                <ul>
+                  <li>STATUS: {cs.STATUS}</li>
+                </ul>
+              </li>
+            ))}
+          </ol>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={manejarCerrarVentana}>

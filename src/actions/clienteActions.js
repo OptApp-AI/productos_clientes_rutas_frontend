@@ -42,8 +42,6 @@ export const pedirClientesLista = () => async (dispatch, getState) => {
     );
 
     dispatch({ type: SUCCESS_CLIENTE_LISTA, payload: data });
-    // Guardar los clientes en el localStorage
-    localStorage.setItem("clientes", JSON.stringify(data));
   } catch (error) {
     dispatch({ type: FAIL_CLIENTE_LISTA, payload: error.message });
   }

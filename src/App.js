@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Encabezado from "./componentes/Encabezado";
-import Delete from "./paginas/Delete";
 import DevolucionDetalles from "./paginas/DevolucionDetalles";
 import DevolucionesLista from "./paginas/DevolucionesLista";
 import Home from "./paginas/Home";
@@ -14,6 +13,7 @@ import RutasLista from "./paginas/RutasLista";
 import SalidaRutaDetalles from "./paginas/SalidaRutaDetalles";
 import SalidaRutasLista from "./paginas/SalidaRutasLista";
 import VentaSalidaRuta from "./paginas/VentaSalidaRuta";
+import Resumen from "./paginas/Resumen";
 
 function App() {
   return (
@@ -47,7 +47,7 @@ function App() {
 
           <Route path="/venta-salida-ruta/:id" element={<VentaSalidaRuta />} />
 
-          <Route path="/borrar" element={<Delete />} />
+          <Route path="/resumen" element={<Resumen />} />
         </Routes>
       </BrowserRouter>
     </div>

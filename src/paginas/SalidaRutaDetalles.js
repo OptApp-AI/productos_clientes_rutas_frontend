@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../componentes/Loader";
 import Mensaje from "../componentes/Mensaje";
 
-import { obtenerSalidaRutaDetalles } from "../actions/salidaRutaActions";
+import {
+  actualizarSalidaRuta,
+  obtenerSalidaRutaDetalles,
+} from "../actions/salidaRutaActions";
 import {
   RESET_SALIDA_RUTA_DETALLES,
   RESET_SALIDA_RUTA_VENTA,
@@ -57,13 +60,13 @@ const SalidaRutaDetalles = ({ match }) => {
   const manejarActualizarSalidaRuta = (e) => {
     e.preventDefault();
     // Disparar la accion de actualizar producto
-    // dispatch(
-    //   actualizarVenta({
-    //     // El id es para el endpoint, no como informacion de actualizacion
-    //     id: ventaId,
-    //     STATUS: status,
-    //   })
-    // );
+    dispatch(
+      actualizarSalidaRuta({
+        // El id es para el endpoint, no como informacion de actualizacion
+        id: salidaRutaId,
+        STATUS: status,
+      })
+    );
   };
 
   const manejarCerrarVentana = () => {
@@ -76,42 +79,43 @@ const SalidaRutaDetalles = ({ match }) => {
     dispatch({ type: RESET_SALIDA_RUTA_DETALLES });
     navigate("/salida-rutas");
   };
-  return loading ? (
-    <Loader />
-  ) : error ? (
-    <Mensaje variant="danger">{error}</Mensaje>
-  ) : (
+
+  if (loading) return <Loader />;
+
+  if (error) return <Mensaje variant="danger">{error}</Mensaje>;
+  return (
     salidaRuta && (
-      <div style={{ padding: "25px", width: "100%" }}>
-        {/* {loadingSRVenta && <Loader />} */}
-        {/* {errorSRVenta && <Mensaje variant="danger">{errorSRVenta}</Mensaje>} */}
-        {/* Esta es la parte que cambia en las paginas */}
-        <h1>Salida Ruta #{salidaRutaId}</h1>
-        <Button variant="primary" onClick={manejarRegresar}>
-          Regresar
-        </Button>
-        <Form onSubmit={manejarActualizarSalidaRuta}>
-          <Form.Group controlId="status">
-            <Form.Label>STATUS</Form.Label>
-            <Form.Control
-              as="select"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="PENDIENTE">Pendiente</option>
-              <option value="CANCELADO">Cancelado</option>
-            </Form.Control>
-          </Form.Group>
-          <Button type="submit">Actualizar salida ruta</Button>
-        </Form>
-        {/* {mostrarReporte && (
+      <Container>
+        <Row className="mt-5">
+          <Col xs={4}>
+            <h1>Salida Ruta #{salidaRutaId}</h1>
+            <Button variant="primary" onClick={manejarRegresar}>
+              Regresar
+            </Button>
+            <Form onSubmit={manejarActualizarSalidaRuta}>
+              <Form.Group controlId="status">
+                <Form.Label>STATUS</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
+                  <option value="PENDIENTE">Pendiente</option>
+                  <option value="CANCELADO">Cancelado</option>
+                </Form.Control>
+              </Form.Group>
+              <Button type="submit">Actualizar salida ruta</Button>
+            </Form>
+            {/* {mostrarReporte && (
           <VentanaMostrarVentaActualizar
             reporteActualizar={reporteActualizar}
             mostrarReporte={mostrarReporte}
             manejarCerrarVentana={manejarCerrarVentana}
           />
         )} */}
-      </div>
+          </Col>
+        </Row>
+      </Container>
     )
   );
 };

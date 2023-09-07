@@ -44,8 +44,6 @@ export const pedirSalidaRutasLista = () => async (dispatch, getState) => {
     );
 
     dispatch({ type: SUCCESS_SALIDA_RUTA_LISTA, payload: data });
-    // Guardar los salidaRutas en el localStorage
-    localStorage.setItem("salidaRutas", JSON.stringify(data));
   } catch (error) {
     dispatch({ type: FAIL_SALIDA_RUTA_LISTA, payload: error.message });
   }
@@ -79,7 +77,7 @@ export const obtenerSalidaRutaDetalles = (id) => async (dispatch, getState) => {
 
 // Creador de acciones para actualizar salidaRuta del backend
 export const actualizarSalidaRuta =
-  (salidaRuta) => async (dispatch, getState) => {
+  (id, salidaRuta) => async (dispatch, getState) => {
     dispatch({ type: REQUEST_SALIDA_RUTA_ACTUALIZAR });
 
     try {
@@ -95,7 +93,7 @@ export const actualizarSalidaRuta =
       };
 
       const { data } = await axios.put(
-        `http://127.0.0.1:8000/api/modificar-salida-ruta/${salidaRuta.id}/`,
+        `http://127.0.0.1:8000/api/modificar-salida-ruta/${id}/`,
         salidaRuta,
         config
       );

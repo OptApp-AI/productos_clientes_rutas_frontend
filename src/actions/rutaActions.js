@@ -43,8 +43,6 @@ export const pedirRutasLista = () => async (dispatch, getState) => {
     );
 
     dispatch({ type: SUCCESS_RUTA_LISTA, payload: data });
-    // Guardar las rutas en el localStorage
-    localStorage.setItem("rutas", JSON.stringify(data));
   } catch (error) {
     dispatch({ type: FAIL_RUTA_LISTA, payload: error.message });
   }

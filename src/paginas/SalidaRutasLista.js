@@ -78,6 +78,7 @@ const SalidaRutaLista = () => {
               <th>DEVOLUCION</th>
               <th>VENTA</th>
               <th>AVISO DE VISITA</th>
+              <th>RESUMEN/CORTE</th>
             </tr>
           </thead>
           <tbody>
@@ -110,6 +111,11 @@ const SalidaRutaLista = () => {
                 <td>
                   <Button onClick={(e) => manejarSalidaRutaVenta(e, sr.id)}>
                     <i className="fa-solid fa-file-signature"></i>
+                  </Button>
+                </td>
+                <td>
+                  <Button onClick={(e) => manejarSalidaRutaVenta(e, sr.id)}>
+                    <i class="fa-solid fa-receipt"></i>
                   </Button>
                 </td>
               </tr>

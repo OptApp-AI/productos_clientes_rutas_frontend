@@ -53,24 +53,9 @@ const tokens = localStorage.getItem("tokens")
   ? JSON.parse(localStorage.getItem("tokens"))
   : null;
 
-const productos = localStorage.getItem("productos")
-  ? JSON.parse(localStorage.getItem("productos"))
-  : null;
-
-const clientes = localStorage.getItem("clientes")
-  ? JSON.parse(localStorage.getItem("clientes"))
-  : null;
-
 const initalState = {
   usuarioInfo: {
     tokens,
-  },
-
-  // productoLista: {
-  //   productos,
-  // },
-  clienteLista: {
-    clientes,
   },
 };
 
