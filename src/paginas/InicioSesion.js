@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../actions/usuarioActions";
 // import { login } from "../actions/usuarioActions";
-import Loader from "../componentes/Loader";
-import Mensaje from "../componentes/Mensaje";
+import Loader from "../componentes/general/Loader";
+import Mensaje from "../componentes/general/Mensaje";
 
 const InicioSesion = () => {
   // Funcion para disparar las acciones

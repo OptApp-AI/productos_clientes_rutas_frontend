@@ -38,7 +38,7 @@ export const pedirRutasLista = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      "http://127.0.0.1:8000/api/rutas/",
+      "/api/rutas/",
       config
     );
 
@@ -66,7 +66,7 @@ export const obtenerRutaDetalles = (id) => async (dispatch, getState) => {
       },
     };
     const { data } = await axios.get(
-      `http://127.0.0.1:8000/api/rutas/${id}/`,
+      `/api/rutas/${id}/`,
       config
     );
 
@@ -93,7 +93,7 @@ export const actualizarRuta = (ruta) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `http://127.0.0.1:8000/api/modificar-ruta/${ruta.id}/`,
+      `/api/modificar-ruta/${ruta.id}/`,
       ruta,
       config
     );
@@ -126,7 +126,7 @@ export const registrarRuta = (ruta) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.post(
-      "http://127.0.0.1:8000/api/crear-ruta/",
+      "/api/crear-ruta/",
       ruta,
       config
     );
@@ -159,7 +159,7 @@ export const borrarRuta = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.delete(
-      `http://127.0.0.1:8000/api/modificar-ruta/${id}/`,
+      `/api/modificar-ruta/${id}/`,
       config
     );
 

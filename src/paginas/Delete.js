@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { pedirProductosLista } from "../actions/productoActions";
-import Loader from "../componentes/Loader";
-import Mensaje from "../componentes/Mensaje";
+import Loader from "../componentes/general/Loader";
+import Mensaje from "../componentes/general/Mensaje";
 
 const Delete = () => {
   const dispatch = useDispatch();
