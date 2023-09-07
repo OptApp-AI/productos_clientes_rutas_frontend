@@ -3,12 +3,20 @@ import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { actualizarRuta, obtenerRutaDetalles } from "../actions/rutaActions";
-import Loader from "../componentes/Loader";
-import Mensaje from "../componentes/Mensaje";
+import Loader from "../componentes/general/Loader";
+import Mensaje from "../componentes/general/Mensaje";
 import {
   RESET_RUTA_ACTUALIZAR,
   RESET_RUTA_DETALLES,
 } from "../constantes/rutaConstantes";
+// Estilos de la pagina
+import { 
+  StyledContainer,
+  StyledRow,
+  StyledCol,
+  StyledButton,
+  StyledFormGroup
+ } from './styles/RutaDetalles.styles'
 
 const RutaDetalles = ({ match }) => {
   // Obtener el id de la ruta
@@ -76,52 +84,80 @@ const RutaDetalles = ({ match }) => {
     navigate("/rutas");
   };
 
-  return loading ? (
-    <Loader />
-  ) : error ? (
-    <Mensaje variant="danger">{error}</Mensaje>
-  ) : (
+  // Renderizar loading si se esta cargando la informacion de la ruta
+  if (loading)
+   return (
+    <StyledContainer fluid>
+      <StyledRow  style={{height: "100%"}}>
+        <StyledCol>
+          <Loader />
+        </StyledCol>
+      </StyledRow>
+    </StyledContainer>
+   )
+
+  // Renderizar mensaje de error si el servidor regresa un error al pedir la informacion de la ruta
+  if (error)
+    return (
+      <StyledContainer fluid>
+        <StyledRow  style={{height: "100%"}}>
+          <StyledCol>
+            <Mensaje variant="danger">
+              Hubo un error al cargar la informacion de la ruta
+            </Mensaje>
+          </StyledCol>
+        </StyledRow>
+      </StyledContainer>
+    )
+
+  return (
     ruta && (
-      <div style={{ padding: "25px", width: "50%" }}>
-        {loadingActualizar && <Loader />}
-        {errorActualizar && (
-          <Mensaje variant="danger">{errorActualizar}</Mensaje>
-        )}
-        {/* Esta es la parte que cambia en las paginas */}
-        <h1>Ruta #{ruta.id}</h1>
-        <Button variant="primary" onClick={manejarRegresar}>
-          Regresar
-        </Button>
-        <Form onSubmit={manejarActualizarRuta}>
-          <Form.Group controlId="nombre">
-            <Form.Label>Nombre</Form.Label>
-            <Form.Control
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
+      <StyledContainer fluid>
 
-          <Form.Group controlId="dia">
-            <Form.Label>Dia</Form.Label>
-            <Form.Control
-              type="text"
-              value={dia}
-              onChange={(e) => setDia(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
+        <StyledRow>
+          <StyledCol>
+            <h1>Ruta #{ruta.id}</h1>
+            <StyledButton variant="primary" onClick={manejarRegresar}>
+              Regresar
+            </StyledButton>
+          </StyledCol>
+        </StyledRow>
 
-          <Form.Group controlId="repartidor">
-            <Form.Label>Repartidor</Form.Label>
-            <Form.Control
-              type="text"
-              value={repartidor}
-              onChange={(e) => setRepartidor(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Button type="submit">Actualizar ruta</Button>
-        </Form>
-      </div>
+
+          <Form onSubmit={manejarActualizarRuta}>
+          <StyledRow>
+            <StyledCol md={6}>
+              <StyledFormGroup controlId="nombre">
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                ></Form.Control>
+              </StyledFormGroup>
+
+              <StyledFormGroup controlId="dia">
+                <Form.Label>Dia</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={dia}
+                  onChange={(e) => setDia(e.target.value)}
+                ></Form.Control>
+              </StyledFormGroup>
+
+              <StyledFormGroup controlId="repartidor">
+                <Form.Label>Repartidor</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={repartidor}
+                  onChange={(e) => setRepartidor(e.target.value)}
+                ></Form.Control>
+              </StyledFormGroup>
+              <StyledButton type="submit">Actualizar ruta</StyledButton>
+             </StyledCol>
+             </StyledRow>
+          </Form>
+      </StyledContainer>
     )
   );
 };

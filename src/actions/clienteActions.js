@@ -37,7 +37,7 @@ export const pedirClientesLista = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      "http://127.0.0.1:8000/api/clientes/",
+      "/api/clientes/",
       config
     );
 
@@ -63,7 +63,7 @@ export const obtenerClienteDetalles = (id) => async (dispatch, getState) => {
       },
     };
     const { data } = await axios.get(
-      `http://127.0.0.1:8000/api/clientes/${id}/`,
+      `/api/clientes/${id}/`,
       config
     );
 
@@ -90,7 +90,7 @@ export const actualizarCliente = (cliente) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `http://127.0.0.1:8000/api/modificar-cliente/${cliente.id}/`,
+      `/api/modificar-cliente/${cliente.id}/`,
       cliente,
       config
     );
@@ -120,7 +120,7 @@ export const registrarCliente = (cliente) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.post(
-      "http://127.0.0.1:8000/api/crear-cliente/",
+      "/api/crear-cliente/",
       cliente,
       config
     );
@@ -149,7 +149,7 @@ export const borrarCliente = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.delete(
-      `http://127.0.0.1:8000/api/modificar-cliente/${id}/`,
+      `/api/modificar-cliente/${id}/`,
       config
     );
 
