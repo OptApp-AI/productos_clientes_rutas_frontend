@@ -40,28 +40,33 @@ const Encabezado = () => {
                   </LinkContainer>
                 </NavDropdown>
 
-                <LinkContainer to="/devoluciones">
-                  <Nav.Link>Lista de Devoluciones</Nav.Link>
-                </LinkContainer>
+                <NavDropdown title="Devoluciones" id="basic-nav-dropdown">
+                  <LinkContainer to="/devoluciones">
+                    <NavDropdown.Item>Lista de devoluciones</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/realizar-devolucion">
+                    <NavDropdown.Item>Realizar una Devolución</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
 
                 <LinkContainer to="/a">
-                  <Nav.Link>Venta</Nav.Link>
+                  <Nav.Link>Venta (mobil)</Nav.Link>
                 </LinkContainer>
 
                 <LinkContainer to="/b">
-                  <Nav.Link>Aviso de Visita</Nav.Link>
+                  <Nav.Link>Aviso de Visita (mobil) PENDIENTE</Nav.Link>
                 </LinkContainer>
 
                 <LinkContainer to="/c">
-                  <Nav.Link>Productos Cargados</Nav.Link>
+                  <Nav.Link>Productos Cargados (mobil)</Nav.Link>
                 </LinkContainer>
 
                 <LinkContainer to="/d">
-                  <Nav.Link>Clientes Cargados</Nav.Link>
+                  <Nav.Link>Clientes Cargados (mobil)</Nav.Link>
                 </LinkContainer>
 
                 <LinkContainer to="/resumen">
-                  <Nav.Link>Resumen/Corte</Nav.Link>
+                  <Nav.Link>Resumen/Corte (mobil)</Nav.Link>
                 </LinkContainer>
               </>
             )}
