@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Row, Form } from "react-bootstrap";
+import { Container, StyledCol, StyledButton, StyledFormGroup } from './styles/FormularioProductoSalidaRuta.styles'
 
 const FormularioProductoSalidaRuta = ({
   producto,
@@ -8,13 +9,18 @@ const FormularioProductoSalidaRuta = ({
   manejarCancelarProducto,
 }) => {
   return (
-    <Row>
-      <p>
-        ID: {producto.id} | NOMBRE: {producto.NOMBRE} | PRECIO:
-        {producto.PRECIO} | CANTIDAD DISPONIBLE: {producto.CANTIDAD}
-      </p>
-      <Col md={3}>
-        <Form.Group controlId={producto.id}>
+    <Container>
+
+      <Row>
+        <p>
+          NOMBRE: {producto.NOMBRE} | PRECIO:
+          {producto.PRECIO} | CANTIDAD DISPONIBLE: {producto.CANTIDAD}
+        </p>
+      </Row>
+
+      <Row>
+       <StyledCol>
+        <StyledFormGroup controlId={producto.id}>
           <Form.Control
             disabled={producto.confirmado}
             type="number"
@@ -23,30 +29,34 @@ const FormularioProductoSalidaRuta = ({
               manejarCambioCantidad(Number(e.target.value), producto.id)
             }
           ></Form.Control>
-        </Form.Group>
-      </Col>
-      <Col md={3}>
-        <Button
+        </StyledFormGroup>
+
+        <StyledButton
+          color='green'
           disabled={producto.confirmado}
           onClick={() => manejarConfirmarProducto(producto.id)}
         >
           Confirmar
-        </Button>
-      </Col>
-      <Col md={3}>
-        <Button
+        </StyledButton>
+
+
+        <StyledButton
+          color='blue'
           disabled={!producto.confirmado}
           onClick={() => manejarConfirmarProducto(producto.id)}
         >
           Modificar
-        </Button>
-      </Col>
-      <Col md={3}>
-        <Button onClick={() => manejarCancelarProducto(producto.id)}>
+        </StyledButton>
+
+
+        <StyledButton
+          color='red' 
+          onClick={() => manejarCancelarProducto(producto.id)}>
           Cancelar
-        </Button>
-      </Col>
-    </Row>
+        </StyledButton>
+      </StyledCol>
+      </Row>
+    </Container>
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { pedirClientesLista } from "../actions/clienteActions";
@@ -10,7 +9,20 @@ import Mensaje from "../componentes/general/Mensaje";
 // import { RESET_SALIDA_RUTA_REGISTRAR } from "../constantes/salidaRutaConstantes";
 import jwt_decode from "jwt-decode";
 import { pedirRutasLista } from "../actions/rutaActions";
-import FormularioClienteSalidaRuta from "../componentes/FormularioClienteSalidaRuta";
+import FormularioClienteSalidaRuta from "../componentes/SalidaRuta/FormularioClienteSalidaRuta";
+
+// Importar los estilos de la pagina
+import { Form } from 'react-bootstrap'
+import { 
+  StyledContainer,
+  StyledCol,
+  StyledRow,
+  StyledFormGroup,
+  StyledButton
+ } from './styles/RealizarSalidaRutaClientes.styles';
+
+ // Importar los custom hooks
+ import { useClientes, useRuta } from './utilis/RealizarSalidaRutaClientes.utilis'
 
 const RealizarSalidaRutaClientes = () => {
   const dispatch = useDispatch();
@@ -94,31 +106,25 @@ const RealizarSalidaRutaClientes = () => {
     localStorage.setItem("salidaRuta", JSON.stringify(salidaRuta));
     navigate("/realizar-salida-ruta/productos");
   };
-  return loadingClientes || loadingRutas ? (
-    <Loader />
-  ) : errorClientes || errorRutas ? (
-    <Mensaje variant="danger">{errorClientes}</Mensaje>
-  ) : (
-    clientes &&
-    rutas && (
-      <div style={{ padding: "25px", width: "100%" }}>
-        {/* {loadingRegistrar && <Loader />} */}
-        {/* {errorRegistrar && <Mensaje variant="danger">{errorRegistrar}</Mensaje>} */}
-        {/* Esta es la parte que cambia en las paginas */}
+  return (
+      <StyledContainer fluid>
+
         <h1>Realizar Salida Ruta</h1>
-        <Form onSubmit={manejarContinuar}>
-          <Row>
-            <Col md={5}>
-              <Form.Group controlId="atiende">
+
+        <StyledRow>
+
+          <StyledCol>
+            <Form onSubmit={manejarContinuar}>
+              <StyledFormGroup controlId="atiende">
                 <Form.Label>ATIENDE</Form.Label>
                 <Form.Control
                   readOnly
                   type="text"
                   value={atiende}
                 ></Form.Control>
-              </Form.Group>
+              </StyledFormGroup>
 
-              <Form.Group controlId="ruta">
+              <StyledFormGroup controlId="ruta">
                 <Form.Label>RUTA</Form.Label>
                 <Form.Control
                   as="select"
@@ -133,9 +139,9 @@ const RealizarSalidaRutaClientes = () => {
                     </option>
                   ))}
                 </Form.Control>
-              </Form.Group>
+              </StyledFormGroup>
 
-              <Form.Group controlId="clientesDisponibles">
+              <StyledFormGroup controlId="clientesDisponibles">
                 <Form.Label>CLIENTES DISPONIBLES</Form.Label>
                 <Form.Control
                   as="select"
@@ -151,18 +157,18 @@ const RealizarSalidaRutaClientes = () => {
                     </option>
                   ))}
                 </Form.Control>
-              </Form.Group>
+              </StyledFormGroup>
 
-              <Form.Group controlId="repartidor">
+              <StyledFormGroup controlId="repartidor">
                 <Form.Label>REPARTIDOR</Form.Label>
                 <Form.Control
                   type="text"
                   value={repartidor}
                   onChange={(e) => setRepartidor(e.target.value)}
                 ></Form.Control>
-              </Form.Group>
+              </StyledFormGroup>
 
-              <Form.Group controlId="observaciones">
+              <StyledFormGroup controlId="observaciones">
                 <Form.Label>OBSERVACIONES</Form.Label>
                 <Form.Control
                   required
@@ -170,13 +176,17 @@ const RealizarSalidaRutaClientes = () => {
                   value={observaciones}
                   onChange={(e) => setObservaciones(e.target.value)}
                 ></Form.Control>
-              </Form.Group>
+              </StyledFormGroup>
 
-              <Button disabled={desabilitarContinuar} type="submit">
-                Seleccionar productos
-              </Button>
-            </Col>
-            <Col md={7}>
+              <StyledFormGroup>
+                <StyledButton disabled={desabilitarContinuar} type="submit">
+                  Seleccionar productos
+                </StyledButton>
+              </StyledFormGroup>
+          </Form>
+          </StyledCol>
+
+          <StyledCol clientes>
               {clientesSalidaRuta.map((c) => (
                 <FormularioClienteSalidaRuta
                   key={c.id}
@@ -185,133 +195,12 @@ const RealizarSalidaRutaClientes = () => {
                   manejarCancelarCliente={manejarCancelarCliente}
                 />
               ))}
-            </Col>
-          </Row>
-        </Form>
-      </div>
+          </StyledCol>
+
+        </StyledRow>
+
+      </StyledContainer>
     )
-  );
-};
-
-const useClientes = (setDesabilitarContinuar) => {
-  const [clientesDisponibles, setClientesDisponibles] = useState([]);
-  const [clientesSalidaRuta, setClientesSalidaRuta] = useState([]);
-
-  const manejarDesabilitarContinuar = (nuevosClientesSalidaRuta) => {
-    setDesabilitarContinuar(
-      !(
-        nuevosClientesSalidaRuta.length > 0 &&
-        nuevosClientesSalidaRuta.every((p) => p.confirmado)
-      )
-    );
-  };
-
-  const manejarSeleccionarCliente = (clienteId) => {
-    const clienteSeleccionado = clientesDisponibles.find(
-      (c) => c.id === clienteId
-    );
-
-    const clienteActualizado = { ...clienteSeleccionado, confirmado: false };
-
-    const nuevosClientesDisponibles = clientesDisponibles.filter(
-      (c) => c.id !== clienteId
-    );
-
-    setClientesDisponibles(nuevosClientesDisponibles);
-
-    const nuevosClientesSalidaRuta = [
-      clienteActualizado,
-      ...clientesSalidaRuta,
-    ];
-
-    setClientesSalidaRuta(nuevosClientesSalidaRuta);
-
-    manejarDesabilitarContinuar(nuevosClientesSalidaRuta);
-  };
-
-  const manejarConfirmarCliente = (clienteId) => {
-    const nuevosClientesSalidaRuta = clientesSalidaRuta.map((c) => {
-      if (c.id === clienteId) {
-        c.confirmado = !c.confirmado;
-      }
-      return c;
-    });
-
-    setClientesSalidaRuta(nuevosClientesSalidaRuta);
-
-    manejarDesabilitarContinuar(nuevosClientesSalidaRuta);
-  };
-
-  const manejarCancelarCliente = (clienteId) => {
-    const clienteSeleccionado = {
-      ...clientesSalidaRuta.find((c) => c.id === clienteId),
-    };
-
-    const nuevosClientesSalidaRuta = clientesSalidaRuta.filter(
-      (c) => c.id !== clienteId
-    );
-    setClientesSalidaRuta(nuevosClientesSalidaRuta);
-
-    const nuevosClientesDisponibles = [
-      clienteSeleccionado,
-      ...clientesDisponibles,
-    ];
-    setClientesDisponibles(nuevosClientesDisponibles);
-  };
-
-  return {
-    clientesDisponibles,
-    clientesSalidaRuta,
-    setClientesDisponibles,
-    setClientesSalidaRuta,
-    manejarSeleccionarCliente,
-    manejarConfirmarCliente,
-    manejarCancelarCliente,
-  };
-};
-
-const useRuta = (
-  rutas,
-  clientes,
-  setClientesDisponibles,
-  setClientesSalidaRuta,
-  setRepartidor,
-  setDesabilitarContinuar
-) => {
-  const [ruta, setRuta] = useState({});
-
-  const separarClientes = (clientesIniciales, ruta) => {
-    const clientesDisponibles = clientesIniciales.filter(
-      (cliente) => !ruta.cliente_id.includes(cliente.id)
-    );
-    const clientesSalidaRuta = clientesIniciales.filter((cliente) =>
-      ruta.cliente_id.includes(cliente.id)
-    );
-
-    const clientesSalidaRutaConfirmados = clientesSalidaRuta.map((c) => {
-      c.confirmado = true;
-      return c;
-    });
-    return [clientesDisponibles, clientesSalidaRutaConfirmados];
-  };
-
-  const manejarCambiarRuta = (rutaId) => {
-    const rutaSeleccionada = { ...rutas.find((r) => r.id === rutaId) };
-
-    const [clientesDisponiblesIniciales, clientesSalidaRutaIniciales] =
-      separarClientes(clientes, rutaSeleccionada);
-    setRuta(rutaSeleccionada);
-    // Seleccionar el repartidor de la ruta
-    setRepartidor(rutaSeleccionada.REPARTIDOR);
-    setClientesDisponibles(clientesDisponiblesIniciales);
-    setClientesSalidaRuta(clientesSalidaRutaIniciales);
-    setDesabilitarContinuar(false);
-  };
-
-  return {
-    ruta,
-    manejarCambiarRuta,
-  };
 };
 
 export default RealizarSalidaRutaClientes;

@@ -11,5 +11,17 @@
     --font-color-label: #fff;
     --font-color-input: #000;
     --white-color: #fff;
+
+    --active-green-button: green;
+    --hover-green-button: rgb(0, 174, 0);
+    --disabled-green-button: #063600;
+
+    --active-red-button: rgb(181, 0, 0);
+    --hover-red-button: red;
+    --disabled-red-button: rgb(92, 0, 0);
+
+    --active-blue-button: rgb(0, 0, 209);
+    --hover-blue-button: blue;
+    --disabled-blue-button: rgb(0, 0, 144);
   }
   

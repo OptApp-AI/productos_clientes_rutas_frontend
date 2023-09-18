@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import {  Form, Row, Col, Button  } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../componentes/general/Loader";
@@ -13,6 +13,15 @@ import {
   RESET_SALIDA_RUTA_DETALLES,
   RESET_SALIDA_RUTA_VENTA,
 } from "../constantes/salidaRutaConstantes";
+
+// Estilos de la pagina
+import { 
+  StyledContainer,
+  StyledRow,
+  StyledCol,
+  StyledButton,
+  StyledFormGroup
+ } from './styles/SalidaRutaDetalles.styles'
 
 const SalidaRutaDetalles = ({ match }) => {
   const params = useParams(match);
@@ -83,17 +92,27 @@ const SalidaRutaDetalles = ({ match }) => {
   if (loading) return <Loader />;
 
   if (error) return <Mensaje variant="danger">{error}</Mensaje>;
+
   return (
     salidaRuta && (
-      <Container>
-        <Row className="mt-5">
-          <Col xs={4}>
+      <StyledContainer fluid>
+
+        <StyledRow>
+          <StyledCol>
+
             <h1>Salida Ruta #{salidaRutaId}</h1>
-            <Button variant="primary" onClick={manejarRegresar}>
+            <StyledButton variant="primary" onClick={manejarRegresar}>
               Regresar
-            </Button>
-            <Form onSubmit={manejarActualizarSalidaRuta}>
-              <Form.Group controlId="status">
+            </StyledButton>
+
+          </StyledCol>
+        </StyledRow>
+      
+        <Form onSubmit={manejarActualizarSalidaRuta}>
+          <StyledRow>
+            <StyledCol md={6}>
+
+              <StyledFormGroup controlId="status">
                 <Form.Label>STATUS</Form.Label>
                 <Form.Control
                   as="select"
@@ -103,9 +122,15 @@ const SalidaRutaDetalles = ({ match }) => {
                   <option value="PENDIENTE">Pendiente</option>
                   <option value="CANCELADO">Cancelado</option>
                 </Form.Control>
-              </Form.Group>
-              <Button type="submit">Actualizar salida ruta</Button>
-            </Form>
+              </StyledFormGroup>
+
+              <StyledButton type="submit">
+                Actualizar salida ruta
+              </StyledButton>
+
+            </StyledCol>
+          </StyledRow>
+        </Form>
             {/* {mostrarReporte && (
           <VentanaMostrarVentaActualizar
             reporteActualizar={reporteActualizar}
@@ -113,9 +138,7 @@ const SalidaRutaDetalles = ({ match }) => {
             manejarCerrarVentana={manejarCerrarVentana}
           />
         )} */}
-          </Col>
-        </Row>
-      </Container>
+      </StyledContainer>
     )
   );
 };

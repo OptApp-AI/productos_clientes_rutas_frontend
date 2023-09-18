@@ -5,10 +5,19 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../componentes/general/Loader";
 import Mensaje from "../componentes/general/Mensaje";
 import { RESET_SALIDA_RUTA_REGISTRAR } from "../constantes/salidaRutaConstantes";
-import VentanaMostrarSalidaRuta from "../componentes/VentanaMostrarSalidaRuta";
-import FormularioProductoSalidaRuta from "../componentes/FormularioProductoSalidaRuta";
+import VentanaMostrarSalidaRuta from "../componentes/SalidaRuta/VentanaMostrarSalidaRuta";
+import FormularioProductoSalidaRuta from "../componentes/SalidaRuta/FormularioProductoSalidaRuta";
 import { pedirProductosLista } from "../actions/productoActions";
 import { registrarSalidaRuta } from "../actions/salidaRutaActions";
+
+import { 
+  StyledContainer,
+  StyledCol,
+  StyledRow,
+  StyledFormGroup,
+  StyledButton
+ } from './styles/RealizarSalidaRutaProductos.styles';
+
 
 const RealizarSalidaRutaProductos = () => {
   const dispatch = useDispatch();
@@ -86,21 +95,18 @@ const RealizarSalidaRutaProductos = () => {
     navigate("/salida-rutas");
   };
 
-  return loading ? (
-    <Loader />
-  ) : error ? (
-    <Mensaje variant="danger">{error}</Mensaje>
-  ) : (
-    productos && (
-      <div style={{ padding: "25px", width: "100%" }}>
-        {loadingRegistrar && <Loader />}
-        {errorRegistrar && <Mensaje variant="danger">{error}</Mensaje>}
-        {/* Esta es la parte que cambia en las paginas */}
+  return (
+      <>
+      <StyledContainer fluid>
+
         <h1>Realizar Salida Ruta</h1>
-        <Form onSubmit={manejarRealizarSalidaRuta}>
-          <Row>
-            <Col md={5}>
-              <Form.Group controlId="productosCliente">
+
+        <StyledRow>
+
+        <StyledCol formulario>
+          <Form onSubmit={manejarRealizarSalidaRuta}>
+
+              <StyledFormGroup controlId="productosCliente">
                 <Form.Label>PRODUCTOS DE DISPONIBLES</Form.Label>
                 <Form.Control
                   as="select"
@@ -116,35 +122,40 @@ const RealizarSalidaRutaProductos = () => {
                     </option>
                   ))}
                 </Form.Control>
-              </Form.Group>
+              </StyledFormGroup>
 
-              <Button disabled={desabilitarSalidaRuta} type="submit">
-                Realizar Salida Ruta
-              </Button>
-            </Col>
-            <Col md={7}>
-              {productosSalidaRuta.map((ps) => (
-                <FormularioProductoSalidaRuta
-                  key={ps.id}
-                  producto={ps}
-                  manejarCambioCantidad={manejarCambioCantidad}
-                  manejarConfirmarProducto={manejarConfirmarProducto}
-                  manejarCancelarProducto={manejarCancelarProducto}
-                />
-              ))}
-            </Col>
-          </Row>
-        </Form>
-        {/* Mostrar salida ruta */}
-        {mostrarSalidaRuta && (
+              <StyledFormGroup>
+                <StyledButton disabled={desabilitarSalidaRuta} type="submit">
+                  Realizar Salida Ruta
+                </StyledButton>
+              </StyledFormGroup>
+
+            </Form>
+          </StyledCol>
+
+          <StyledCol productos>
+            {productosSalidaRuta.map((ps) => (
+              <FormularioProductoSalidaRuta
+                key={ps.id}
+                producto={ps}
+                manejarCambioCantidad={manejarCambioCantidad}
+                manejarConfirmarProducto={manejarConfirmarProducto}
+                manejarCancelarProducto={manejarCancelarProducto}
+              />
+            ))}
+          </StyledCol>
+        </StyledRow>
+      </StyledContainer>
+
+      {/* Mostrar salida ruta */}
+      {mostrarSalidaRuta && (
           <VentanaMostrarSalidaRuta
             salidaRuta={salidaRuta}
             mostrarSalidaRuta={mostrarSalidaRuta}
             manejarCerrarVentana={manejarCerrarVentana}
           />
         )}
-      </div>
-    )
+    </>
   );
 };
 

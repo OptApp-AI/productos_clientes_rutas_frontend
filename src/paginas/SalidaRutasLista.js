@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { pedirSalidaRutasLista } from "../actions/salidaRutaActions";
 
 import Loader from "../componentes/general/Loader";
 import Mensaje from "../componentes/general/Mensaje";
-import VentanaMostrarSalidaRuta from "../componentes/VentanaMostrarSalidaRuta";
+import TablaSalidasRuta from "../componentes/SalidaRuta/TablaSalidasRuta";
+import VentanaMostrarSalidaRuta from "../componentes/SalidaRuta/VentanaMostrarSalidaRuta";
 import {
   RESET_SALIDA_RUTA_DETALLES,
   RESET_SALIDA_RUTA_VENTA,
 } from "../constantes/salidaRutaConstantes";
 import { formatearFecha } from "../utilitis";
+
+// Estilos de la pagina
+import {
+  StyledContainer,
+  StyledRow,
+  StyledCol
+} from './styles/SalidaRutasLista.styles'
 
 const SalidaRutaLista = () => {
   // Funcion para disparar las acciones
@@ -57,71 +64,50 @@ const SalidaRutaLista = () => {
     navigate(`/venta-salida-ruta/${salidaRutaId}`);
   };
 
-  return loading ? (
-    <Loader />
-  ) : error ? (
-    <Mensaje variant="danger">{error}</Mensaje>
-  ) : (
-    salidaRutas && (
-      <div style={{ padding: "25px" }}>
-        {/* Esta el la parte que cambia en las paginas */}
-        <h1>Salida Rutas</h1>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>ATIENDE</th>
-              <th>REPARTIDOR</th>
-              <th>FECHA</th>
-              <th>STATUS</th>
-              <th>EDITAR</th>
-              <th>DEVOLUCION</th>
-              <th>VENTA</th>
-              <th>AVISO DE VISITA</th>
-              <th>RESUMEN/CORTE</th>
-            </tr>
-          </thead>
-          <tbody>
-            {salidaRutas.map((sr) => (
-              <tr
-                key={sr.id}
-                onClick={() => manejarMostrarDetallesSalidaRuta(sr.id)}
-              >
-                <td>{sr.id}</td>
-                <td>{sr.ATIENDE}</td>
-                <td>{sr.REPARTIDOR}</td>
-                <td>{formatearFecha(sr.FECHA)}</td>
-                <td>{sr.STATUS}</td>
-                <td>
-                  <Button onClick={() => manejarSalidaRutaDetalles(sr.id)}>
-                    <i className="fa-solid fa-circle-info"></i>
-                  </Button>
-                </td>
-                <td>
-                  <Button onClick={() => manejarSalidaRutaDetalles(sr.id)}>
-                    <i className="fa-solid fa-rotate-left"></i>
-                  </Button>
-                </td>
+  // Renderizar loading si se estan cargando las rutas
+  if (loading)
+    return (
+      <StyledContainer>
+        <StyledRow>
+          <StyledCol>
+            <Loader />
+          </StyledCol>
+        </StyledRow>
+      </StyledContainer>
+    )
 
-                <td>
-                  <Button onClick={(e) => manejarSalidaRutaVenta(e, sr.id)}>
-                    <i className="fa-solid fa-cart-shopping"></i>
-                  </Button>
-                </td>
-                <td>
-                  <Button onClick={(e) => manejarSalidaRutaVenta(e, sr.id)}>
-                    <i className="fa-solid fa-file-signature"></i>
-                  </Button>
-                </td>
-                <td>
-                  <Button onClick={(e) => manejarSalidaRutaVenta(e, sr.id)}>
-                    <i class="fa-solid fa-receipt"></i>
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+  // Renderizar mensaje de error si el servidor regresa un error al pedir la lista de salidas a ruta
+  if (error)
+    return (
+      <StyledContainer>
+        <StyledRow>
+          <StyledCol>
+            <Mensaje variant="danger">
+              Hubo un error al cargar la lista de salidas a ruta
+            </Mensaje>
+          </StyledCol>
+        </StyledRow>
+      </StyledContainer>
+    )
+
+  return (
+    salidaRutas && (
+      <>
+      <StyledContainer fluid>
+        <h1>Salida Rutas</h1>
+       
+       <StyledRow>
+        <StyledCol>
+          <TablaSalidasRuta 
+              salidaRutas={salidaRutas}
+              manejarMostrarDetallesSalidaRuta={manejarMostrarDetallesSalidaRuta}
+              formatearFecha={formatearFecha}
+              manejarSalidaRutaDetalles={manejarSalidaRutaDetalles}
+              manejarSalidaRutaVenta={manejarSalidaRutaVenta}
+          />
+          </StyledCol>
+        </StyledRow>
+      </StyledContainer>
 
         {/* Mostrar venta */}
         {mostrarSalidaRuta && (
@@ -131,7 +117,7 @@ const SalidaRutaLista = () => {
             manejarCerrarVentana={manejarCerrarVentana}
           />
         )}
-      </div>
+      </>
     )
   );
 };

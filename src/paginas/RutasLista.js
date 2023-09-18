@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import { borrarRuta, pedirRutasLista } from "../actions/rutaActions";
@@ -92,7 +91,7 @@ const RutasLista = () => {
     );
 
   
-  // Renderizar mensaj de error si el servidor regresa un error al pedir la lista de rutas
+  // Renderizar mensaje de error si el servidor regresa un error al pedir la lista de rutas
   if(error) 
       return(
          <StyledContainer fluid>
