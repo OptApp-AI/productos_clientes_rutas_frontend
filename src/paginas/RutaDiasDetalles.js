@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { actualizarRuta, obtenerRutaDetalles } from "../actions/rutaActions";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  actualizarRuta,
+  actualizarRutaDia,
+  obtenerRutaDetalles,
+  obtenerRutaDiaDetalles,
+} from "../actions/rutaActions";
 import Loader from "../componentes/general/Loader";
 import Mensaje from "../componentes/general/Mensaje";
 import {
   RESET_RUTA_ACTUALIZAR,
   RESET_RUTA_DETALLES,
+  RESET_RUTA_DIA_ACTUALIZAR,
 } from "../constantes/rutaConstantes";
 // Estilos de la pagina
 import {
@@ -16,32 +22,36 @@ import {
   StyledCol,
   StyledButton,
   StyledFormGroup,
+  StyledButtonDanger,
 } from "./styles/RutaDetalles.styles";
 import { toast } from "react-hot-toast";
 import { pedirUsuariosLista } from "../actions/usuarioActions";
 
-const RutaDetalles = ({ match }) => {
+const RutaDiasDetalles = () => {
   // Obtener el id de la ruta
-  const params = useParams(match);
-  const rutaId = params.id;
-
+  const params = useParams();
+  const rutaDiaId = params.id;
   // Funcion para disparar las acciones
   const dispatch = useDispatch();
 
   // Funcion para navegar en la pagina
   const navigate = useNavigate();
 
-  // Obtener el estado desde el Redux store
-  const rutaDetalles = useSelector((state) => state.rutaDetalles);
-  const { loading, ruta, error } = rutaDetalles;
+  // Funcion para obtener rutaId
+  const location = useLocation();
+  const rutaId = location.search.split("=")[1];
 
   // Obtener el estado desde el Redux store
-  const rutaActualizar = useSelector((state) => state.rutaActualizar);
+  const rutaDiaDetalles = useSelector((state) => state.rutaDiaDetalles);
+  const { loading, rutaDia, error } = rutaDiaDetalles;
+
+  // Obtener el estado desde el Redux store
+  const rutaDiaActualizar = useSelector((state) => state.rutaDiaActualizar);
   const {
     loading: actualizarLoading,
     success: actualizarSuccess,
     error: actualizarError,
-  } = rutaActualizar;
+  } = rutaDiaActualizar;
 
   // Obtener el estado desde el Redux store
   const usuarioLista = useSelector((state) => state.usuarioLista);
@@ -52,19 +62,17 @@ const RutaDetalles = ({ match }) => {
     error: usuariosError,
   } = usuarioLista;
 
-  const [nombre, setNombre] = useState("");
   const [repartidor, setRepartidor] = useState();
 
   useEffect(() => {
     // Si no hay ruta o la ruta no es el que seleccione, disparar la accion de
     // obtener ruta
-    if (!ruta || ruta.id !== Number(rutaId)) {
-      dispatch(obtenerRutaDetalles(rutaId));
+    if (!rutaDia || rutaDia.id !== Number(rutaDiaId)) {
+      dispatch(obtenerRutaDiaDetalles(rutaDiaId));
     } else {
-      setNombre(ruta.NOMBRE);
-      setRepartidor(ruta.REPARTIDOR);
+      setRepartidor(rutaDia.REPARTIDOR);
     }
-  }, [dispatch, ruta, rutaId, actualizarSuccess, navigate]);
+  }, [dispatch, rutaDia, rutaDiaId]);
 
   // useEffect para mostrar las alertas de actualizar ruta
   useEffect(() => {
@@ -76,8 +84,8 @@ const RutaDetalles = ({ match }) => {
       toast.remove();
       toast.success("La actualización fue exitosa");
 
-      dispatch({ type: RESET_RUTA_ACTUALIZAR });
-      navigate("/rutas");
+      dispatch({ type: RESET_RUTA_DIA_ACTUALIZAR });
+      navigate(`/rutas/${rutaId}/dias`);
     }
 
     if (actualizarError) {
@@ -88,6 +96,7 @@ const RutaDetalles = ({ match }) => {
     actualizarSuccess,
     actualizarError,
     actualizarLoading,
+    rutaId,
     dispatch,
     navigate,
   ]);
@@ -109,26 +118,27 @@ const RutaDetalles = ({ match }) => {
     }
   }, [usuariosLoading, usuariosError, usuarios, dispatch]);
 
-  const manejarActualizarRuta = (e) => {
+  const manejarActualizarRutaDia = (e) => {
     e.preventDefault();
 
-    // Disparar la accion de actualizar producto
-    dispatch(
-      actualizarRuta({
-        // El id es para el endpoint, no como informacion de actualizacion
-        id: rutaId,
-        NOMBRE: nombre,
-        // SI RESETEAS LA RUTADIA ENTONCES SE LE ASIGNA EL REPARTIDOR DE RUTA
-        REPARTIDOR: repartidor,
-        REPARTIDOR_NOMBRE: getRepartidorName(usuarios, repartidor),
-      })
-    );
+    const rutaDiaActualizada = {
+      // El id es para el endpoint, no como informacion de actualizacion
+      id: rutaDiaId,
+      // SI RESETEAS LA RUTADIA ENTONCES SE LE ASIGNA EL REPARTIDOR DE RUTA
+      RUTA: rutaDia.RUTA,
+      DIA: rutaDia.DIA,
+      REPARTIDOR: repartidor,
+      REPARTIDOR_NOMBRE: getRepartidorName(usuarios, repartidor),
+    };
+
+    // Disparar la accion de actualizar ruta dia
+    dispatch(actualizarRutaDia(rutaDiaActualizada));
   };
 
   const manejarRegresar = () => {
     // Redireccionar a la pagina de productos
     dispatch({ type: RESET_RUTA_DETALLES });
-    navigate("/rutas");
+    navigate(`/rutas/${rutaId}/dias`);
   };
 
   // Renderizar loading si se esta cargando la informacion de la ruta
@@ -158,29 +168,22 @@ const RutaDetalles = ({ match }) => {
     );
 
   return (
-    ruta && (
+    rutaDia && (
       <StyledContainer fluid>
         <StyledRow>
           <StyledCol>
-            <h1>Ruta #{ruta.id}</h1>
+            <h1>
+              {rutaDia.NOMBRE} - {rutaDia.DIA}
+            </h1>
             <StyledButton variant="primary" onClick={manejarRegresar}>
               Regresar
             </StyledButton>
           </StyledCol>
         </StyledRow>
 
-        <Form onSubmit={manejarActualizarRuta}>
+        <Form onSubmit={manejarActualizarRutaDia}>
           <StyledRow>
-            <StyledCol md={6}>
-              <StyledFormGroup controlId="nombre">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                ></Form.Control>
-              </StyledFormGroup>
-
+            <StyledCol md={4}>
               <StyledFormGroup controlId="repartidor">
                 <Form.Label>Repartidor</Form.Label>
                 <Form.Control
@@ -205,7 +208,7 @@ const RutaDetalles = ({ match }) => {
   );
 };
 
-export default RutaDetalles;
+export default RutaDiasDetalles;
 
 const getRepartidorName = (usuarios, repartidor) =>
   usuarios.find((user) => user.id === Number(repartidor)).name;

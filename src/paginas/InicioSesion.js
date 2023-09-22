@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../actions/usuarioActions";
 // import { login } from "../actions/usuarioActions";
 import Loader from "../componentes/general/Loader";
 import Mensaje from "../componentes/general/Mensaje";
+import { login } from "../actions/sesionActions";
 
 const InicioSesion = () => {
   // Funcion para disparar las acciones
@@ -16,17 +16,17 @@ const InicioSesion = () => {
 
   //   // Obtener la informacion del usuario desde el Redux store
   const usuarioInfo = useSelector((state) => state.usuarioInfo);
-  const { loading, tokens, error } = usuarioInfo;
+  const { loading, token, error } = usuarioInfo;
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
     // Si el usuario ya ha iniciado sesion redirecciona a la pagina de inicio
-    if (tokens) {
+    if (token) {
       navigate("/");
     }
-  }, [navigate, tokens]);
+  }, [navigate, token]);
 
   const manejatSubmit = (e) => {
     e.preventDefault();

@@ -1,22 +1,22 @@
 import {
-  REQUEST_LOGIN_USUARIO,
-  SUCCESS_LOGIN_USUARIO,
-  FAIL_LOGIN_USUARIO,
-  LOGOUT_USUARIO,
+  REQUEST_USUARIO_LISTA,
+  SUCCESS_USUARIO_LISTA,
+  FAIL_USUARIO_LISTA,
+  RESET_USUARIO_LISTA,
 } from "../constantes/usuarioConstantes";
 
-export const usuarioInfoReducer = (state = {}, action) => {
+export const usuarioListaReducer = (state = {}, action) => {
   switch (action.type) {
-    case REQUEST_LOGIN_USUARIO:
+    case REQUEST_USUARIO_LISTA:
       return { loading: true };
 
-    case SUCCESS_LOGIN_USUARIO:
-      return { loading: false, tokens: action.payload };
+    case SUCCESS_USUARIO_LISTA:
+      return { loading: false, usuarios: action.payload };
 
-    case FAIL_LOGIN_USUARIO:
+    case FAIL_USUARIO_LISTA:
       return { loading: false, error: action.payload };
 
-    case LOGOUT_USUARIO:
+    case RESET_USUARIO_LISTA:
       return {};
 
     default:
