@@ -10,14 +10,13 @@ import FormularioProductoSalidaRuta from "../componentes/SalidaRuta/FormularioPr
 import { pedirProductosLista } from "../actions/productoActions";
 import { registrarSalidaRuta } from "../actions/salidaRutaActions";
 
-import { 
+import {
   StyledContainer,
   StyledCol,
   StyledRow,
   StyledFormGroup,
-  StyledButton
- } from './styles/RealizarSalidaRutaProductos.styles';
-
+  StyledButton,
+} from "./styles/RealizarSalidaRutaProductos.styles";
 
 const RealizarSalidaRutaProductos = () => {
   const dispatch = useDispatch();
@@ -39,6 +38,8 @@ const RealizarSalidaRutaProductos = () => {
     error: errorRegistrar,
   } = salidaRutaRegistrar;
 
+  console.log("DFFNHHH", salidaRuta);
+
   const [desabilitarSalidaRuta, setDesabilitarSalidaRuta] = useState(true);
   const [mostrarSalidaRuta, setMostrarSalidaRuta] = useState(false);
 
@@ -52,17 +53,18 @@ const RealizarSalidaRutaProductos = () => {
     manejarCancelarProducto,
   } = useProductos(setDesabilitarSalidaRuta);
 
-  useEffect(() => {
-    const salidaRutaClientes = localStorage.getItem("salidaRuta")
-      ? JSON.parse(localStorage.getItem("salidaRuta"))
-      : null;
-    if (!salidaRutaClientes) {
-      navigate("/realizar-salida-ruta/clientes");
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   const salidaRutaClientes = localStorage.getItem("salidaRuta")
+  //     ? JSON.parse(localStorage.getItem("salidaRuta"))
+  //     : null;
+  //   if (!salidaRutaClientes) {
+  //     navigate("/realizar-salida-ruta-clientes");
+  //   }
+  // }, [navigate]);
 
   useEffect(() => {
     if (salidaRuta) {
+      alert("DRGHGHJK");
       setMostrarSalidaRuta(true);
     }
 
@@ -85,6 +87,8 @@ const RealizarSalidaRutaProductos = () => {
       salidaRutaProductos: nuevosProductosSalidaRuta,
       STATUS: "PENDIENTE",
     };
+
+    console.log(salidaRutaProductos);
     dispatch(registrarSalidaRuta(salidaRutaProductos));
   };
 
@@ -95,17 +99,16 @@ const RealizarSalidaRutaProductos = () => {
     navigate("/salida-rutas");
   };
 
-  return (
-      <>
-      <StyledContainer fluid>
+  console.log(mostrarSalidaRuta);
 
+  return (
+    <>
+      <StyledContainer fluid>
         <h1>Realizar Salida Ruta</h1>
 
         <StyledRow>
-
-        <StyledCol formulario>
-          <Form onSubmit={manejarRealizarSalidaRuta}>
-
+          <StyledCol formulario>
+            <Form onSubmit={manejarRealizarSalidaRuta}>
               <StyledFormGroup controlId="productosCliente">
                 <Form.Label>PRODUCTOS DE DISPONIBLES</Form.Label>
                 <Form.Control
@@ -129,7 +132,6 @@ const RealizarSalidaRutaProductos = () => {
                   Realizar Salida Ruta
                 </StyledButton>
               </StyledFormGroup>
-
             </Form>
           </StyledCol>
 
@@ -149,12 +151,12 @@ const RealizarSalidaRutaProductos = () => {
 
       {/* Mostrar salida ruta */}
       {mostrarSalidaRuta && (
-          <VentanaMostrarSalidaRuta
-            salidaRuta={salidaRuta}
-            mostrarSalidaRuta={mostrarSalidaRuta}
-            manejarCerrarVentana={manejarCerrarVentana}
-          />
-        )}
+        <VentanaMostrarSalidaRuta
+          salidaRuta={salidaRuta}
+          mostrarSalidaRuta={mostrarSalidaRuta}
+          manejarCerrarVentana={manejarCerrarVentana}
+        />
+      )}
     </>
   );
 };

@@ -3,13 +3,13 @@ import { Modal } from "react-bootstrap";
 import { formatearFecha } from "../../utilitis";
 
 // Estilos del componente
-import { 
-	StyledModal,
-	StyledModalBody,
-	StyledModalHeader,
-	StyledModalFooter,
-	StyledButton
-} from './styles/VentanaMostrarSalidaRuta.styles';
+import {
+  StyledModal,
+  StyledModalBody,
+  StyledModalHeader,
+  StyledModalFooter,
+  StyledButton,
+} from "./styles/VentanaMostrarSalidaRuta.styles";
 
 const VentanaMostrarSalidaRuta = ({
   salidaRuta,
@@ -18,12 +18,12 @@ const VentanaMostrarSalidaRuta = ({
 }) => {
   return (
     salidaRuta &&
-    salidaRuta.salida_ruta_productos && (
+    salidaRuta.productos && (
       <StyledModal
-        scrollable 
-        show={mostrarSalidaRuta} 
-        onHide={manejarCerrarVentana}>
-
+        scrollable
+        show={mostrarSalidaRuta}
+        onHide={manejarCerrarVentana}
+      >
         <StyledModalHeader closeButton>
           <Modal.Title>Detalles de Salida a Ruta #{salidaRuta.id}</Modal.Title>
         </StyledModalHeader>
@@ -48,9 +48,9 @@ const VentanaMostrarSalidaRuta = ({
             <strong>PRODUCTOS DE SALIDA RUTA:</strong>
           </p>
           <ol>
-            {salidaRuta.salida_ruta_productos.map((ps) => (
+            {salidaRuta.productos.map((ps) => (
               <li key={ps.id}>
-                {ps.producto_nombre}:
+                {ps.PRODUCTO_NOMBRE}:
                 <ul>
                   <li>CANTIDAD RUTA: {ps.CANTIDAD_RUTA}</li>
                   <li>CANTIDAD DISPONIBLE: {ps.CANTIDAD_DISPONIBLE}</li>
@@ -65,9 +65,9 @@ const VentanaMostrarSalidaRuta = ({
           </p>
 
           <ol>
-            {salidaRuta.salida_ruta_clientes.map((cs) => (
+            {salidaRuta.clientes.map((cs) => (
               <li key={cs.id}>
-                {cs.nombre}:
+                {cs.CLIENTE_NOMBRE}:
                 <ul>
                   <li>STATUS: {cs.STATUS}</li>
                 </ul>
@@ -81,7 +81,6 @@ const VentanaMostrarSalidaRuta = ({
             Cerrar
           </StyledButton>
         </StyledModalFooter>
-
       </StyledModal>
     )
   );

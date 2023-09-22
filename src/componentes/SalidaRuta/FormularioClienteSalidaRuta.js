@@ -1,6 +1,10 @@
 import React from "react";
 import { Row } from "react-bootstrap";
-import { Container, StyledCol, StyledButton } from './styles/FormularioClienteSalidaRuta.styles'
+import {
+  Container,
+  StyledCol,
+  StyledButton,
+} from "./styles/FormularioClienteSalidaRuta.styles";
 
 const FormularioClienteSalidaRuta = ({
   cliente,
@@ -9,19 +13,17 @@ const FormularioClienteSalidaRuta = ({
 }) => {
   return (
     <Container>
-
       <Row>
-        <p>
+        {/* <p>
           ID: {cliente.id} | NOMBRE: {cliente.NOMBRE} | RUTA:{" "}
           {cliente.ruta_nombre}
-        </p>
+        </p> */}
       </Row>
 
       <Row>
         <StyledCol>
-
           <StyledButton
-            color='green'
+            color="green"
             disabled={cliente.confirmado}
             onClick={() => manejarConfirmarCliente(cliente.id)}
           >
@@ -29,19 +31,19 @@ const FormularioClienteSalidaRuta = ({
           </StyledButton>
 
           <StyledButton
-            color='blue'
+            color="blue"
             disabled={!cliente.confirmado}
             onClick={() => manejarConfirmarCliente(cliente.id)}
           >
             Modificar
           </StyledButton>
 
-          <StyledButton  
-            color='red' 
-            onClick={() => manejarCancelarCliente(cliente.id)}>
+          <StyledButton
+            color="red"
+            onClick={() => manejarCancelarCliente(cliente.id)}
+          >
             Cancelar
           </StyledButton>
-
         </StyledCol>
       </Row>
     </Container>

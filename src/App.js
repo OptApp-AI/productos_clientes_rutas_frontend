@@ -59,11 +59,11 @@ function App() {
                 element={<SalidaRutaDetalles />}
               />
               <Route
-                path="/realizar-salida-ruta/clientes"
+                path="/realizar-salida-ruta-clientes"
                 element={<RealizarSalidaRutaClientes />}
               />
               <Route
-                path="/realizar-salida-ruta/productos"
+                path="/realizar-salida-ruta-productos"
                 element={<RealizarSalidaRutaProductos />}
               />
               {/* Devoluciones */}

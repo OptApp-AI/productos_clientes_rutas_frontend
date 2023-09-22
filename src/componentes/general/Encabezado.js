@@ -112,7 +112,7 @@ const Encabezado = () => {
                 <StyledNavDropdown
                   bgcolor={
                     location.pathname === "/salida-rutas" ||
-                    location.pathname === "/realizar-salida-ruta"
+                    location.pathname === "/realizar-salida-ruta-clientes"
                       ? "#1E90FF"
                       : "black"
                   }
@@ -122,7 +122,7 @@ const Encabezado = () => {
                   <LinkContainer to="/salida-rutas">
                     <NavDropdown.Item>Lista de Salidas a Ruta</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to="/realizar-salida-ruta">
+                  <LinkContainer to="/realizar-salida-ruta-clientes">
                     <NavDropdown.Item>Realizar Salida a Ruta</NavDropdown.Item>
                   </LinkContainer>
                 </StyledNavDropdown>
