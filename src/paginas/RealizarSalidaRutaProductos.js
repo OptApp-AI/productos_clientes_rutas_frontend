@@ -38,8 +38,6 @@ const RealizarSalidaRutaProductos = () => {
     error: errorRegistrar,
   } = salidaRutaRegistrar;
 
-  console.log("DFFNHHH", salidaRuta);
-
   const [desabilitarSalidaRuta, setDesabilitarSalidaRuta] = useState(true);
   const [mostrarSalidaRuta, setMostrarSalidaRuta] = useState(false);
 
@@ -88,7 +86,6 @@ const RealizarSalidaRutaProductos = () => {
       STATUS: "PENDIENTE",
     };
 
-    console.log(salidaRutaProductos);
     dispatch(registrarSalidaRuta(salidaRutaProductos));
   };
 
@@ -98,8 +95,6 @@ const RealizarSalidaRutaProductos = () => {
     localStorage.removeItem("salidaRuta");
     navigate("/salida-rutas");
   };
-
-  console.log(mostrarSalidaRuta);
 
   return (
     <>
