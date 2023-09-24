@@ -26,6 +26,7 @@ import {
   rutaDiaDetallesReducer,
   clientesRutaDiaReducer,
   rutaDiaActualizarReducer,
+  rutaSalidaRutaListaReducer,
 } from "./reducers/rutaReducers";
 
 import {
@@ -56,6 +57,7 @@ const reducer = combineReducers({
   rutaDiaDetalles: rutaDiaDetallesReducer,
   clientesRutaDia: clientesRutaDiaReducer,
   rutaDiaActualizar: rutaDiaActualizarReducer,
+  rutaSalidaRutaLista: rutaSalidaRutaListaReducer,
   // Saluda Ruta
   salidaRutaLista: salidaRutaListaReducer,
   salidaRutaDetalles: salidaRutaDetallesReducer,

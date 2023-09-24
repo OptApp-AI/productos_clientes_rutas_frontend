@@ -9,6 +9,7 @@ import {
   FAIL_RUTA_DIA_LISTA,
   FAIL_RUTA_LISTA,
   FAIL_RUTA_REGISTRAR,
+  FAIL_RUTA_SALIDA_RUTA_LISTA,
   REQUEST_RUTA_ACTUALIZAR,
   REQUEST_RUTA_BORRAR,
   REQUEST_RUTA_DETALLES,
@@ -18,6 +19,7 @@ import {
   REQUEST_RUTA_DIA_LISTA,
   REQUEST_RUTA_LISTA,
   REQUEST_RUTA_REGISTRAR,
+  REQUEST_RUTA_SALIDA_RUTA_LISTA,
   RESET_RUTA_DIA_LISTA,
   RESET_RUTA_LISTA,
   SUCCESS_RUTA_ACTUALIZAR,
@@ -29,6 +31,7 @@ import {
   SUCCESS_RUTA_DIA_LISTA,
   SUCCESS_RUTA_LISTA,
   SUCCESS_RUTA_REGISTRAR,
+  SUCCESS_RUTA_SALIDA_RUTA_LISTA,
 } from "../constantes/rutaConstantes";
 import { RESET_CLIENTE_LISTA } from "../constantes/clienteConstantes";
 
@@ -286,5 +289,28 @@ export const actualizarRutaDia = (ruta) => async (dispatch, getState) => {
     // dispatch({ type: RESET_VENTA_LISTA });
   } catch (error) {
     dispatch({ type: FAIL_RUTA_DIA_ACTUALIZAR, payload: error.message });
+  }
+};
+
+export const pedirRutasSalidaRutaLista = () => async (dispatch, getState) => {
+  dispatch({ type: REQUEST_RUTA_SALIDA_RUTA_LISTA });
+
+  try {
+    const {
+      usuarioInfo: { token },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.get("/api/rutas-salida-ruta/", config);
+
+    dispatch({ type: SUCCESS_RUTA_SALIDA_RUTA_LISTA, payload: data });
+  } catch (error) {
+    dispatch({ type: FAIL_RUTA_SALIDA_RUTA_LISTA, payload: error.message });
   }
 };

@@ -8,7 +8,7 @@ import Mensaje from "../componentes/general/Mensaje";
 // import VentanaMostrarSalidaRuta from "../componentes/VentanaMostrarSalidaRuta";
 // import { RESET_SALIDA_RUTA_REGISTRAR } from "../constantes/salidaRutaConstantes";
 
-import { pedirRutasLista } from "../actions/rutaActions";
+import { pedirRutasSalidaRutaLista } from "../actions/rutaActions";
 import FormularioClienteSalidaRuta from "../componentes/SalidaRuta/FormularioClienteSalidaRuta";
 
 // Importar los estilos de la pagina
@@ -20,23 +20,8 @@ import {
   StyledFormGroup,
   StyledButton,
 } from "./styles/RealizarSalidaRutaClientes.styles";
-import { useRuta } from "./utilis/hooks/useRuta";
-import { useClientes } from "./utilis/hooks/useClientes";
+import { DAY_WEEK, useFiltros } from "./utilis/hooks/useClientes";
 import { pedirUsuariosLista } from "../actions/usuarioActions";
-
-const DAY_WEEK = [
-  "DOMINGO",
-  "LUNES",
-  "MARTES",
-  "MIERCOLES",
-  "JUEVES",
-  "VIERNES",
-  "SABADO",
-];
-
-const currentDate = new Date();
-const currentDayIndex = currentDate.getDay();
-const currentDayName = DAY_WEEK[currentDayIndex];
 
 const RealizarSalidaRutaClientes = () => {
   const dispatch = useDispatch();
@@ -44,35 +29,41 @@ const RealizarSalidaRutaClientes = () => {
 
   // Pedir estado de clientes
   const clienteLista = useSelector((state) => state.clienteLista);
-  const {
-    loading: loadingClientes,
-    clientes,
-    error: errorClientes,
-  } = clienteLista;
+  const { clientes } = clienteLista;
 
   // Pedir estado de rutas
-  const rutaLista = useSelector((state) => state.rutaLista);
-  const { loading: loadingRutas, rutas, error: errorRutas } = rutaLista;
+  const rutaSalidaRutaLista = useSelector((state) => state.rutaSalidaRutaLista);
+  const { rutasSalidaRuta } = rutaSalidaRutaLista;
 
   // Obtener estado del Redux store
   const usuarioLista = useSelector((state) => state.usuarioLista);
-  const {
-    loading: usuariosLoading,
-    usuarios,
-    error: usuariosError,
-  } = usuarioLista;
+  const { usuarios } = usuarioLista;
 
-  // Campos de SalidaRuta
-  const [repartidor, setRepartidor] = useState("");
-  const [day, setDay] = useState(currentDayName);
-  // const [desabilitarContinuar, setDesabilitarContinuar] = useState(true);
-  const [observaciones, setObservaciones] = useState("NO APLICA");
+  const {
+    // Clientes
+    clientesDisponibles,
+    clientesSalidaRuta,
+    manejarSeleccionarCliente,
+    manejarCancelarCliente,
+    manejarModificarStatusCliente,
+    // Ruta
+    ruta,
+    manejarCambiarRuta,
+    // day,
+    // setDay,
+    // repartidor,
+    // setRepartidor,
+
+    // Otros
+    observaciones,
+    setObservaciones,
+  } = useFiltros(clientes, rutasSalidaRuta, usuarios);
 
   useEffect(() => {
-    if (!rutas) {
-      dispatch(pedirRutasLista());
+    if (!rutasSalidaRuta) {
+      dispatch(pedirRutasSalidaRutaLista());
     }
-  }, [rutas, dispatch]);
+  }, [rutasSalidaRuta, dispatch]);
 
   useEffect(() => {
     if (!clientes) {
@@ -89,15 +80,7 @@ const RealizarSalidaRutaClientes = () => {
     }
   }, [usuarios, dispatch]);
 
-  const { ruta, manejarCambiarRuta } = useRuta(rutas);
-
-  const {
-    clientesDisponibles,
-    clientesSalidaRuta,
-    manejarSeleccionarCliente,
-    manejarCancelarCliente,
-    manejarModificarStatusCliente,
-  } = useClientes(clientes);
+  // const { ruta, manejarCambiarRuta } = useRuta(rutasSalidaRuta);
 
   // const {
   //   clientesDisponibles,
@@ -147,8 +130,9 @@ const RealizarSalidaRutaClientes = () => {
     localStorage.setItem("salidaRuta", JSON.stringify(salidaRuta));
     navigate("/realizar-salida-ruta-productos");
   };
+
   return (
-    rutas &&
+    rutasSalidaRuta &&
     clientesDisponibles && (
       <StyledContainer fluid>
         <h1>Realizar Salida Ruta</h1>
@@ -165,7 +149,7 @@ const RealizarSalidaRutaClientes = () => {
                   onChange={(e) => manejarCambiarRuta(Number(e.target.value))}
                 >
                   <option value={0}>Seleccione una ruta</option>
-                  {rutas.map((r) => (
+                  {rutasSalidaRuta.map((r) => (
                     <option key={r.id} value={r.id}>
                       {r.NOMBRE}
                     </option>
@@ -243,9 +227,6 @@ const RealizarSalidaRutaClientes = () => {
           </StyledCol>
 
           <StyledCol>
-            <StyledButton type="button" disabled={!ruta.NOMBRE}>
-              Cargar clientes de ruta
-            </StyledButton>
             {clientesSalidaRuta.map((c) => (
               <FormularioClienteSalidaRuta
                 key={c.id}

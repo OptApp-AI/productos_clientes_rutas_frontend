@@ -27,7 +27,7 @@ export const pedirClientesLista = () => async (dispatch, getState) => {
     };
 
     // Recibir la respuesta del backend y guardarla en data
-    const { data } = await axios.get("api/clientes-venta/", config);
+    const { data } = await axios.get("api/clientes-salida-ruta/", config);
 
     dispatch({ type: SUCCESS_CLIENTE_LISTA, payload: data });
   } catch (error) {
