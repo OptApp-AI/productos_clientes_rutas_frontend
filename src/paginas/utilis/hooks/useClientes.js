@@ -14,34 +14,43 @@ const currentDate = new Date();
 const currentDayIndex = currentDate.getDay();
 const currentDayName = DAY_WEEK[currentDayIndex];
 
-// Custom Hook para manejar el estado de los clientes de la salida a ruta
-export const useFiltros = (clientes, rutas, usuarios) => {
-  // Hook para manejar el estado de los clientes disponibles para ser seleccionados
-  const [clientesFormulario, setClientesFormulario] = useState([]);
-  // Hook para manejar el estado de los clientes que ya estan en la ruta
-  // const [clientesSalidaRuta, setClientesSalidaRuta] = useState([]);
-
-  // Hook para manejar el estado de la ruta
+// Custom Hook para manejar el estado de la salidaRuta
+export const useSalidaRuta = (clientes, rutas, usuarios) => {
+  // Hook para manejar el estado de la salidaRuta
   const [salidaRuta, setSalidaRuta] = useState({
     rutaDayId: "",
     rutaNombre: "",
     rutaDay: currentDayName,
     clientes: [],
-    repartidor: "",
+    repartidorId: "",
+    observaciones: "",
   });
+
+  // Hook para manejar el estado de los clientes disponibles para ser seleccionados
+  const [clientesFormulario, setClientesFormulario] = useState([]);
 
   // Cuando se cambia el dia o el nombre de la ruta, todos los campos de la ruta y los productos del formulario se modifican
   const manejarModificarSalidaRuta = (nombre, day) => {
+    if (!nombre) {
+      setSalidaRuta({
+        rutaDayId: "",
+        rutaNombre: "",
+        rutaDay: currentDayName,
+        clientes: [],
+        repartidorId: "",
+      });
+
+      return;
+    }
+
     // Obtener rutaDiaId y repartidor
-    const { rutaDiaId, repartidor } = findRutaDiaIdByNombreAndDia(
-      nombre,
-      day,
-      rutas
-    );
-    // Onbtener clientes de la ruta y clientes disponibles
+    const { rutaDiaId, repartidorId } =
+      findRutaDiaIdAndRepartidorIdByNombreAndDia(nombre, day, rutas);
+
+    // Obtener clientes de la ruta y clientes disponibles
     const [clientesSalidaRuta, clientesDisponibles] = filterClientesByRutaDiaId(
       clientes,
-      salidaRuta.rutaDiaId
+      rutaDiaId
     );
 
     // Establecer clientes del formulario
@@ -53,8 +62,16 @@ export const useFiltros = (clientes, rutas, usuarios) => {
       rutaNombre: nombre,
       rutaDay: day,
       clientes: clientesSalidaRuta,
-      repartidor,
+      repartidorId,
     });
+  };
+
+  const manejarModificarRepartidor = (newRepartidorId) => {
+    const newRepartidor = findUsuarioById(newRepartidorId, usuarios);
+    setSalidaRuta((prevSalidaRuta) => ({
+      ...prevSalidaRuta,
+      repartidorId: newRepartidor.id,
+    }));
   };
 
   // Cuando solo se cambia el cliente
@@ -78,11 +95,7 @@ export const useFiltros = (clientes, rutas, usuarios) => {
     }));
   };
 
-  // Hook para manejar campos adicionales para generar salida ruta
-  // const [repartidor, setRepartidor] = useState("");
-  // const [day, setDay] = useState(currentDayName);
   // const [desabilitarContinuar, setDesabilitarContinuar] = useState(true);
-  const [observaciones, setObservaciones] = useState("NO APLICA");
 
   // Funcion para desabilitar el boton para continuar con la salida a ruta
   //   const manejarDesabilitarContinuar = (nuevosClientesSalidaRuta) => {
@@ -111,19 +124,11 @@ export const useFiltros = (clientes, rutas, usuarios) => {
 
     manejarAgregarClienteSalidaRuta(clienteActualizado);
 
-    // Agregar el cliente seleccionado a los clientes de la salida a ruta
-    // const nuevosClientesSalidaRuta = [
-    //   ...clientesSalidaRuta,
-    //   clienteActualizado,
-    // ];
-    // // Actualizar el estado de los clientes de la salida a ruta
-    // setClientesSalidaRuta(nuevosClientesSalidaRuta);
-
     // manejarDesabilitarContinuar(nuevosClientesSalidaRuta);
   };
 
-  // Funcion para confirmar el cliente de la lista de clientes de salida a ruta
-  const manejarModificarStatusClienteSalidaRuta = (clienteId) => {
+  // Funcion para modificar status del cliente de la lista de clientes de salida a ruta
+  const manejarModificarStatusCliente = (clienteId) => {
     const newClientes = salidaRuta.clientes.map((c) => {
       if (c.id === clienteId) {
         c.confirmado = !c.confirmado;
@@ -141,34 +146,46 @@ export const useFiltros = (clientes, rutas, usuarios) => {
   };
 
   // Funcion para cancelar el cliente de la lista de clientes seleccionados
-  const manejarCancelarClienteSalidaRuta = (clienteId) => {
+  const manejarCancelarCliente = (clienteId) => {
+    // Encontrar el cliente a remover de salida ruta
     const clienteSeleccionado = {
       ...salidaRuta.clientes.find((c) => c.id === clienteId),
     };
 
-    // const nuevosClientesSalidaRuta = clientesSalidaRuta.filter(
-    //   (c) => c.id !== clienteId
-    // );
-
-    // setClientesSalidaRuta(nuevosClientesSalidaRuta);
-
+    // Remover el cliente de salida ruta
     manejarRemoverClienteSalidaRuta(clienteId);
 
+    // Agregar el cliente al formulario
     const nuevosClientesDisponibles = [
       clienteSeleccionado,
       ...clientesFormulario,
     ];
-
     setClientesFormulario(nuevosClientesDisponibles);
   };
 
+  const manejarModificarObservaciones = (newObservaciones) => {
+    setSalidaRuta((prevSalidaRuta) => ({
+      ...prevSalidaRuta,
+      observaciones: newObservaciones,
+    }));
+  };
+
   return {
-    // Clientes del formulario
-    clientesFormulario,
-    setClientesFormulario,
     // Salida ruta
     salidaRuta,
     manejarModificarSalidaRuta,
+
+    // Repartidor
+    manejarModificarRepartidor,
+
+    // Clientes
+    clientesFormulario,
+    manejarSeleccionarCliente,
+    manejarCancelarCliente,
+    manejarModificarStatusCliente,
+
+    // Otros
+    manejarModificarObservaciones,
   };
 };
 
@@ -183,7 +200,7 @@ function filterClientesByRutaDiaId(clientes, ruta_dia_id) {
   return [clientesSalidaRuta, clientesDisponibles];
 }
 
-function findRutaDiaIdByNombreAndDia(NOMBRE, DIA, routes) {
+function findRutaDiaIdAndRepartidorIdByNombreAndDia(NOMBRE, DIA, routes) {
   const route = routes.find((route) => route.NOMBRE === NOMBRE);
 
   if (!route) {
@@ -196,5 +213,9 @@ function findRutaDiaIdByNombreAndDia(NOMBRE, DIA, routes) {
     return null; // Return null if the DIA is not found
   }
 
-  return { rutaDiaId: rutaDia.id, repartidor: rutaDia.REPARTIDOR_NOMBRE }; // Return the id for the given DIA
+  return { rutaDiaId: rutaDia.id, repartidorId: rutaDia.repartidor_id }; // Return the id for the given DIA
 }
+
+const findUsuarioById = (userId, usuarios) => {
+  return usuarios.find((usuario) => usuario.id === userId);
+};
