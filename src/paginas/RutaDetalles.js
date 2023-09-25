@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { actualizarRuta, obtenerRutaDetalles } from "../actions/rutaActions";
@@ -10,13 +10,15 @@ import {
   RESET_RUTA_DETALLES,
 } from "../constantes/rutaConstantes";
 // Estilos de la pagina
-import { 
+import {
   StyledContainer,
   StyledRow,
   StyledCol,
   StyledButton,
-  StyledFormGroup
- } from './styles/RutaDetalles.styles'
+  StyledFormGroup,
+} from "./styles/RutaDetalles.styles";
+import { toast } from "react-hot-toast";
+import { pedirUsuariosLista } from "../actions/usuarioActions";
 
 const RutaDetalles = ({ match }) => {
   // Obtener el id de la ruta
@@ -36,44 +38,89 @@ const RutaDetalles = ({ match }) => {
   // Obtener el estado desde el Redux store
   const rutaActualizar = useSelector((state) => state.rutaActualizar);
   const {
-    loading: loadingActualizar,
-    success: successActualizar,
-    error: errorActualizar,
+    loading: actualizarLoading,
+    success: actualizarSuccess,
+    error: actualizarError,
   } = rutaActualizar;
 
+  // Obtener el estado desde el Redux store
+  const usuarioLista = useSelector((state) => state.usuarioLista);
+
+  const {
+    loading: usuariosLoading,
+    usuarios,
+    error: usuariosError,
+  } = usuarioLista;
+
   const [nombre, setNombre] = useState("");
-  const [dia, setDia] = useState("");
-  const [repartidor, setRepartidor] = useState("");
+  const [repartidor, setRepartidor] = useState();
 
   useEffect(() => {
-    // Si la actualizacion fue correcta, reset rutaActualizar y redireccionar a la pagina de rutas
-    if (successActualizar) {
-      dispatch({ type: RESET_RUTA_ACTUALIZAR });
-      alert("La actualización fue exitosa");
-      navigate("/rutas");
-    }
-
     // Si no hay ruta o la ruta no es el que seleccione, disparar la accion de
     // obtener ruta
     if (!ruta || ruta.id !== Number(rutaId)) {
       dispatch(obtenerRutaDetalles(rutaId));
     } else {
       setNombre(ruta.NOMBRE);
-      setDia(ruta.DIA);
       setRepartidor(ruta.REPARTIDOR);
     }
-  }, [dispatch, ruta, rutaId, successActualizar, navigate]);
+  }, [dispatch, ruta, rutaId, actualizarSuccess, navigate]);
+
+  // useEffect para mostrar las alertas de actualizar ruta
+  useEffect(() => {
+    if (actualizarLoading) {
+      toast.loading("Actualizando ruta");
+    }
+
+    if (actualizarSuccess) {
+      toast.remove();
+      toast.success("La actualización fue exitosa");
+
+      dispatch({ type: RESET_RUTA_ACTUALIZAR });
+      navigate("/rutas");
+    }
+
+    if (actualizarError) {
+      toast.dismiss();
+      toast.error("Error al actualizar ruta");
+    }
+  }, [
+    actualizarSuccess,
+    actualizarError,
+    actualizarLoading,
+    dispatch,
+    navigate,
+  ]);
+
+  // useEffect para mostrar las alertas al cargar usuarios
+  useEffect(() => {
+    if (usuariosLoading) {
+      toast.loading("Cargando usuarios");
+    }
+
+    if (!usuarios) {
+      toast.dismiss();
+      dispatch(pedirUsuariosLista());
+    }
+
+    if (usuariosError) {
+      toast.dismiss();
+      toast.error("Error al cargar la lista de usuarios");
+    }
+  }, [usuariosLoading, usuariosError, usuarios, dispatch]);
 
   const manejarActualizarRuta = (e) => {
     e.preventDefault();
+
     // Disparar la accion de actualizar producto
     dispatch(
       actualizarRuta({
         // El id es para el endpoint, no como informacion de actualizacion
         id: rutaId,
         NOMBRE: nombre,
-        DIA: dia,
+        // SI RESETEAS LA RUTADIA ENTONCES SE LE ASIGNA EL REPARTIDOR DE RUTA
         REPARTIDOR: repartidor,
+        REPARTIDOR_NOMBRE: getRepartidorName(usuarios, repartidor),
       })
     );
   };
@@ -86,21 +133,21 @@ const RutaDetalles = ({ match }) => {
 
   // Renderizar loading si se esta cargando la informacion de la ruta
   if (loading)
-   return (
-    <StyledContainer fluid>
-      <StyledRow  style={{height: "100%"}}>
-        <StyledCol>
-          <Loader />
-        </StyledCol>
-      </StyledRow>
-    </StyledContainer>
-   )
+    return (
+      <StyledContainer fluid>
+        <StyledRow style={{ height: "100%" }}>
+          <StyledCol>
+            <Loader />
+          </StyledCol>
+        </StyledRow>
+      </StyledContainer>
+    );
 
   // Renderizar mensaje de error si el servidor regresa un error al pedir la informacion de la ruta
   if (error)
     return (
       <StyledContainer fluid>
-        <StyledRow  style={{height: "100%"}}>
+        <StyledRow style={{ height: "100%" }}>
           <StyledCol>
             <Mensaje variant="danger">
               Hubo un error al cargar la informacion de la ruta
@@ -108,12 +155,11 @@ const RutaDetalles = ({ match }) => {
           </StyledCol>
         </StyledRow>
       </StyledContainer>
-    )
+    );
 
   return (
     ruta && (
       <StyledContainer fluid>
-
         <StyledRow>
           <StyledCol>
             <h1>Ruta #{ruta.id}</h1>
@@ -123,8 +169,7 @@ const RutaDetalles = ({ match }) => {
           </StyledCol>
         </StyledRow>
 
-
-          <Form onSubmit={manejarActualizarRuta}>
+        <Form onSubmit={manejarActualizarRuta}>
           <StyledRow>
             <StyledCol md={6}>
               <StyledFormGroup controlId="nombre">
@@ -136,30 +181,31 @@ const RutaDetalles = ({ match }) => {
                 ></Form.Control>
               </StyledFormGroup>
 
-              <StyledFormGroup controlId="dia">
-                <Form.Label>Dia</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={dia}
-                  onChange={(e) => setDia(e.target.value)}
-                ></Form.Control>
-              </StyledFormGroup>
-
               <StyledFormGroup controlId="repartidor">
                 <Form.Label>Repartidor</Form.Label>
                 <Form.Control
-                  type="text"
+                  as="select"
                   value={repartidor}
                   onChange={(e) => setRepartidor(e.target.value)}
-                ></Form.Control>
+                >
+                  {usuarios &&
+                    usuarios.map((usuario) => (
+                      <option key={usuario.id} value={usuario.id}>
+                        {usuario.name}
+                      </option>
+                    ))}
+                </Form.Control>
               </StyledFormGroup>
               <StyledButton type="submit">Actualizar ruta</StyledButton>
-             </StyledCol>
-             </StyledRow>
-          </Form>
+            </StyledCol>
+          </StyledRow>
+        </Form>
       </StyledContainer>
     )
   );
 };
 
 export default RutaDetalles;
+
+const getRepartidorName = (usuarios, repartidor) =>
+  usuarios.find((user) => user.id === Number(repartidor)).name;

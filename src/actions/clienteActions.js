@@ -1,162 +1,41 @@
 import axios from "axios";
 import {
-  FAIL_CLIENTE_ACTUALIZAR,
-  FAIL_CLIENTE_BORRAR,
-  FAIL_CLIENTE_DETALLES,
   FAIL_CLIENTE_LISTA,
-  FAIL_CLIENTE_REGISTRAR,
-  REQUEST_CLIENTE_ACTUALIZAR,
-  REQUEST_CLIENTE_BORRAR,
-  REQUEST_CLIENTE_DETALLES,
   REQUEST_CLIENTE_LISTA,
-  REQUEST_CLIENTE_REGISTRAR,
-  RESET_CLIENTE_DETALLES,
-  RESET_CLIENTE_LISTA,
-  SUCCESS_CLIENTE_ACTUALIZAR,
-  SUCCESS_CLIENTE_BORRAR,
-  SUCCESS_CLIENTE_DETALLES,
   SUCCESS_CLIENTE_LISTA,
-  SUCCESS_CLIENTE_REGISTRAR,
 } from "../constantes/clienteConstantes";
-// import { RESET_VENTA_LISTA } from "../constantes/ventaConstantes";
+import { actualizarAccessToken } from "./sesionActions";
+import { BASE_URL } from "../constantes/constantes";
 
 // Creador de acciones para pedir los clientes del backend
 export const pedirClientesLista = () => async (dispatch, getState) => {
   dispatch({ type: REQUEST_CLIENTE_LISTA });
 
+  // Intentar pedir lista de productos al backend
   try {
+    // Obtener el token desde el Redux store
     const {
-      usuarioInfo: { tokens },
+      usuarioInfo: { token },
     } = getState();
 
+    // Crear header con el tipo de datos que se envia y el token para autenticacio
     const config = {
       headers: {
         "Content-type": "application/json",
-        Authorization: `Bearer ${tokens.access}`,
+        Authorization: `Bearer ${token}`,
       },
     };
 
-    const { data } = await axios.get(
-      "/api/clientes/",
-      config
-    );
+    // Recibir la respuesta del backend y guardarla en data
+    const { data } = await axios.get("api/clientes-salida-ruta/", config);
 
     dispatch({ type: SUCCESS_CLIENTE_LISTA, payload: data });
   } catch (error) {
-    dispatch({ type: FAIL_CLIENTE_LISTA, payload: error.message });
-  }
-};
-
-// Creador de acciones para pedir el cliente con el id del backend
-export const obtenerClienteDetalles = (id) => async (dispatch, getState) => {
-  dispatch({ type: REQUEST_CLIENTE_DETALLES });
-
-  try {
-    const {
-      usuarioInfo: { tokens },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${tokens.access}`,
-      },
-    };
-    const { data } = await axios.get(
-      `/api/clientes/${id}/`,
-      config
-    );
-
-    dispatch({ type: SUCCESS_CLIENTE_DETALLES, payload: data });
-  } catch (error) {
-    dispatch({ type: FAIL_CLIENTE_DETALLES, payload: error.message });
-  }
-};
-
-// Creador de acciones para actualizar cliente del backend
-export const actualizarCliente = (cliente) => async (dispatch, getState) => {
-  dispatch({ type: REQUEST_CLIENTE_ACTUALIZAR });
-
-  try {
-    const {
-      usuarioInfo: { tokens },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${tokens.access}`,
-      },
-    };
-
-    const { data } = await axios.put(
-      `/api/modificar-cliente/${cliente.id}/`,
-      cliente,
-      config
-    );
-
-    dispatch({ type: SUCCESS_CLIENTE_ACTUALIZAR });
-    dispatch({ type: RESET_CLIENTE_LISTA });
-    // dispatch({ type: RESET_VENTA_LISTA });
-  } catch (error) {
-    dispatch({ type: FAIL_CLIENTE_ACTUALIZAR, payload: error.message });
-  }
-};
-
-// Creador de acciones para registrar un nuevo cliente en el backend
-export const registrarCliente = (cliente) => async (dispatch, getState) => {
-  dispatch({ type: REQUEST_CLIENTE_REGISTRAR });
-
-  try {
-    const {
-      usuarioInfo: { tokens },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${tokens.access}`,
-      },
-    };
-
-    const { data } = await axios.post(
-      "/api/crear-cliente/",
-      cliente,
-      config
-    );
-
-    dispatch({ type: SUCCESS_CLIENTE_REGISTRAR });
-    dispatch({ type: RESET_CLIENTE_LISTA });
-  } catch (error) {
-    dispatch({ type: FAIL_CLIENTE_REGISTRAR, payload: error.message });
-  }
-};
-
-// Creador de acciones para borrar un cliente en el backend
-export const borrarCliente = (id) => async (dispatch, getState) => {
-  dispatch({ type: REQUEST_CLIENTE_BORRAR });
-
-  try {
-    const {
-      usuarioInfo: { tokens },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${tokens.access}`,
-      },
-    };
-
-    const { data } = await axios.delete(
-      `/api/modificar-cliente/${id}/`,
-      config
-    );
-
-    dispatch({ type: SUCCESS_CLIENTE_BORRAR });
-    dispatch({ type: RESET_CLIENTE_LISTA });
-    // dispatch({ type: RESET_VENTA_LISTA });
-  } catch (error) {
-    dispatch({ type: FAIL_CLIENTE_BORRAR, payload: error.message });
+    // Si el backend responde con un error 401 (no autorizado) intentar actualizar el token
+    if (error.response && error.response.status === 401) {
+      dispatch(actualizarAccessToken(pedirClientesLista));
+    } else {
+      dispatch({ type: FAIL_CLIENTE_LISTA, payload: error.message });
+    }
   }
 };

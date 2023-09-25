@@ -28,13 +28,13 @@ export const pedirSalidaRutasLista = () => async (dispatch, getState) => {
 
   try {
     const {
-      usuarioInfo: { tokens },
+      usuarioInfo: { token },
     } = getState();
 
     const config = {
       headers: {
         "Content-type": "application/json",
-        Authorization: `Bearer ${tokens.access}`,
+        Authorization: `Bearer ${token}`,
       },
     };
 
@@ -109,13 +109,13 @@ export const registrarSalidaRuta =
 
     try {
       const {
-        usuarioInfo: { tokens },
+        usuarioInfo: { token },
       } = getState();
 
       const config = {
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${tokens.access}`,
+          Authorization: `Bearer ${token}`,
         },
       };
 

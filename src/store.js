@@ -8,7 +8,9 @@ import thunk from "redux-thunk";
 
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import { usuarioInfoReducer } from "./reducers/usuarioReducers";
+import { usuarioInfoReducer } from "./reducers/sesionReducers";
+
+import { usuarioListaReducer } from "./reducers/usuarioReducers";
 
 import { clienteListaReducer } from "./reducers/clienteReducers";
 
@@ -19,6 +21,12 @@ import {
   rutaDetallesReducer,
   rutaActualizarReducer,
   rutaRegistrarReducer,
+  rutaBorrarReducer,
+  rutaDiasListaReducer,
+  rutaDiaDetallesReducer,
+  clientesRutaDiaReducer,
+  rutaDiaActualizarReducer,
+  rutaSalidaRutaListaReducer,
 } from "./reducers/rutaReducers";
 
 import {
@@ -31,8 +39,10 @@ import {
 const middleware = [thunk];
 
 const reducer = combineReducers({
-  // Usuario
+  // Cuenta
   usuarioInfo: usuarioInfoReducer,
+  // Usuario
+  usuarioLista: usuarioListaReducer,
   // Productos
   productoLista: productoListaReducer,
   // Clientes
@@ -42,6 +52,12 @@ const reducer = combineReducers({
   rutaDetalles: rutaDetallesReducer,
   rutaActualizar: rutaActualizarReducer,
   rutaRegistrar: rutaRegistrarReducer,
+  rutaBorrar: rutaBorrarReducer,
+  rutaDiasLista: rutaDiasListaReducer,
+  rutaDiaDetalles: rutaDiaDetallesReducer,
+  clientesRutaDia: clientesRutaDiaReducer,
+  rutaDiaActualizar: rutaDiaActualizarReducer,
+  rutaSalidaRutaLista: rutaSalidaRutaListaReducer,
   // Saluda Ruta
   salidaRutaLista: salidaRutaListaReducer,
   salidaRutaDetalles: salidaRutaDetallesReducer,
@@ -49,19 +65,19 @@ const reducer = combineReducers({
   salidaRutaVenta: salidaRutaVentaReducer,
 });
 
-const tokens = localStorage.getItem("tokens")
-  ? JSON.parse(localStorage.getItem("tokens"))
+const token = localStorage.getItem("accessToken")
+  ? JSON.parse(localStorage.getItem("accessToken"))
   : null;
 
-const initalState = {
+const initialState = {
   usuarioInfo: {
-    tokens,
+    token,
   },
 };
 
 const store = createStore(
   reducer,
-  initalState,
+  initialState,
   composeWithDevTools(applyMiddleware(...middleware))
 );
 

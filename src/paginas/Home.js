@@ -1,50 +1,79 @@
-import React, { useEffect, useState } from "react";
-import { Button, Col, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import jwt_decode from "jwt-decode";
-import { LOGOUT_USUARIO } from "../constantes/usuarioConstantes";
+import React from "react";
+import { Form } from "react-bootstrap";
+import { toast } from "react-hot-toast";
+
+// Importar estilos del componente
+import {
+  StyledButton,
+  StyledButtonContainer,
+  StyledCol,
+  StyledContainer,
+  StyledFormGroup,
+  StyledImageUser,
+  StyledRow,
+} from "./styles/Home.styles";
+import ConfirmarCerrarSesion from "../componentes/Home/ConfirmarCerrarSesion";
+import { BASE_URL } from "../constantes/constantes";
 
 const Home = () => {
-  // Funcion para disparar las acciones
-  const dispatch = useDispatch();
-  // Funcion para navegar en la pagina
-  const navigate = useNavigate();
+  // Obtener la informacion del usuario del localStorage
+  const name = getLocalStorage("name");
+  const username = getLocalStorage("username");
+  const isAdmin = getLocalStorage("isAdmin");
+  const imagen = getLocalStorage("imagen");
 
-  // Obtener informacion del usuario desde el Redux store
-  const usuarioInfo = useSelector((state) => state.usuarioInfo);
-  const { tokens } = usuarioInfo;
-
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    // Si el usuario no ha iniciado sesion, redirecciona a la pagina de login
-    if (!tokens) {
-      navigate("/login");
-    } else {
-      // Obtener el usrname a partir del token
-      var decoded = jwt_decode(tokens.access);
-      setUsername(decoded.username);
-    }
-  }, [navigate, tokens]);
-
+  // Funcion para manejar el cierre de sesion
   const manejarLogout = () => {
-    // Disparar accion para cerrar sesion
-    dispatch({ type: LOGOUT_USUARIO });
-    // Remover tokens del localStorage
-    localStorage.removeItem("tokens");
+    toast((t) => <ConfirmarCerrarSesion t={t} />, {
+      duration: 5000,
+    });
   };
 
   return (
-    <Row style={{ maxWidth: "80%", padding: "25px" }}>
-      <Col md={3}>
-        <h1>{username}</h1>
-      </Col>
-      <Col md={3}>
-        <Button onClick={manejarLogout}>Logout</Button>
-      </Col>
-    </Row>
+    <StyledContainer fluid>
+      <StyledRow>
+        {/* Columna con la imagen del usuario */}
+        <StyledCol md={6}>
+          <StyledImageUser src={`${BASE_URL}${imagen}`} />
+        </StyledCol>
+        {/* Columna con la informacion del usuario */}
+        <StyledCol md={6}>
+          <Form>
+            <StyledFormGroup>
+              <Form.Label>Usuario:</Form.Label>
+              <Form.Control
+                type="text"
+                readOnly
+                value={username}
+              ></Form.Control>
+            </StyledFormGroup>
+
+            <StyledFormGroup>
+              <Form.Label>Permisos:</Form.Label>
+              <Form.Control
+                type="text"
+                readOnly
+                value={isAdmin ? "ADMINISTRADOR" : "NO ES ADMINISTRADOR"}
+              ></Form.Control>
+            </StyledFormGroup>
+
+            <StyledFormGroup>
+              <Form.Label>Nombre:</Form.Label>
+              <Form.Control type="text" readOnly value={name}></Form.Control>
+            </StyledFormGroup>
+
+            <StyledButtonContainer>
+              <StyledButton onClick={manejarLogout}>Cerrar Sesión</StyledButton>
+            </StyledButtonContainer>
+          </Form>
+        </StyledCol>
+      </StyledRow>
+    </StyledContainer>
   );
+};
+
+const getLocalStorage = (key) => {
+  return JSON.parse(localStorage.getItem(key));
 };
 
 export default Home;

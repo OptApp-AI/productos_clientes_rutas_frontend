@@ -1,6 +1,15 @@
 import React from "react";
-import { Button, Modal } from "react-bootstrap";
-import { formatearFecha } from "../utilitis";
+import { Modal } from "react-bootstrap";
+import { formatearFecha } from "../../utilitis";
+
+// Estilos del componente
+import {
+  StyledModal,
+  StyledModalBody,
+  StyledModalHeader,
+  StyledModalFooter,
+  StyledButton,
+} from "./styles/VentanaMostrarSalidaRuta.styles";
 
 const VentanaMostrarSalidaRuta = ({
   salidaRuta,
@@ -9,12 +18,17 @@ const VentanaMostrarSalidaRuta = ({
 }) => {
   return (
     salidaRuta &&
-    salidaRuta.salida_ruta_productos && (
-      <Modal show={mostrarSalidaRuta} onHide={manejarCerrarVentana}>
-        <Modal.Header closeButton>
+    salidaRuta.productos && (
+      <StyledModal
+        scrollable
+        show={mostrarSalidaRuta}
+        onHide={manejarCerrarVentana}
+      >
+        <StyledModalHeader closeButton>
           <Modal.Title>Detalles de Salida a Ruta #{salidaRuta.id}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        </StyledModalHeader>
+
+        <StyledModalBody>
           <p>
             <strong>ATIENDE:</strong> {salidaRuta.ATIENDE}
           </p>
@@ -34,9 +48,9 @@ const VentanaMostrarSalidaRuta = ({
             <strong>PRODUCTOS DE SALIDA RUTA:</strong>
           </p>
           <ol>
-            {salidaRuta.salida_ruta_productos.map((ps) => (
+            {salidaRuta.productos.map((ps) => (
               <li key={ps.id}>
-                {ps.producto_nombre}:
+                {ps.PRODUCTO_NOMBRE}:
                 <ul>
                   <li>CANTIDAD RUTA: {ps.CANTIDAD_RUTA}</li>
                   <li>CANTIDAD DISPONIBLE: {ps.CANTIDAD_DISPONIBLE}</li>
@@ -51,22 +65,23 @@ const VentanaMostrarSalidaRuta = ({
           </p>
 
           <ol>
-            {salidaRuta.salida_ruta_clientes.map((cs) => (
+            {salidaRuta.clientes.map((cs) => (
               <li key={cs.id}>
-                {cs.nombre}:
+                {cs.CLIENTE_NOMBRE}:
                 <ul>
                   <li>STATUS: {cs.STATUS}</li>
                 </ul>
               </li>
             ))}
           </ol>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={manejarCerrarVentana}>
+        </StyledModalBody>
+
+        <StyledModalFooter>
+          <StyledButton variant="secondary" onClick={manejarCerrarVentana}>
             Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          </StyledButton>
+        </StyledModalFooter>
+      </StyledModal>
     )
   );
 };
